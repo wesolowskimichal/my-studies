@@ -1,0 +1,91 @@
+.Wrapper {
+  justify-self: end;
+  align-self: flex-start;
+
+  .Header {
+    height: 42px;
+    margin: 0 auto;
+    display: grid;
+    place-content: center;
+    color: white;
+    text-shadow: 0 1px 0 #000;
+
+    --border-angle: 0turn; /* For animation. */
+    --main-bg: conic-gradient(from var(--border-angle), #333f44, #1a1a1b 5%, #1a1a1b 60%, #333f44 95%);
+
+    border: solid 5px transparent;
+    border-radius: 2em;
+    --gradient-border: conic-gradient(from var(--border-angle), transparent 25%, #37aa9c, #94f3e4 99%, transparent);
+
+    background: 
+        /* padding-box clip this background into the overall element except the border. */ var(
+          --main-bg
+        )
+        padding-box,
+      /* border-box extends this background to the border space. */ var(--gradient-border) border-box,
+      /* Duplicate main background to fill in behind the gradient border. You can remove this if you want the border to extend "outside" the box background. */
+        var(--main-bg) border-box;
+
+    background-position: center center;
+
+    animation: bg-spin var(--animation-duration) linear infinite;
+    --animation-duration: 3s;
+
+    &.Hover {
+      border-radius: 50%;
+      transition: 0.5s;
+      box-shadow: 0 0 15px #94f3e4;
+      color: #94f3e4;
+      box-shadow: 0 0 5px #94f3e4;
+      text-shadow: 0 0 5px #94f3e4;
+    }
+  }
+
+  @keyframes bg-spin {
+    from {
+      --border-angle: 0turn;
+    }
+    to {
+      --border-angle: 1turn;
+    }
+  }
+
+  .Menu {
+    .MenuItem {
+      border: 10px solid;
+      border-bottom: 0;
+      border-image-slice: 1;
+      border-width: 2px;
+      border-image-source: linear-gradient(to left, #37aa9c, #94f3e4);
+      text-align: center;
+      padding: 0.4rem;
+
+      opacity: 0;
+      transform: translateY(-20px); // Start position above
+
+      // Add transition properties to animate opacity and transform
+      transition: opacity 0.5s ease, transform 0.5s ease;
+
+      &.Show {
+        opacity: 1;
+        transform: translateY(0); // End position at original position
+      }
+
+      &:last-of-type {
+        border-bottom: 2px solid;
+      }
+
+      &:hover {
+        transition-delay: 0;
+        transition: 0.4s;
+        background-color: #37aa9c;
+      }
+    }
+  }
+}
+
+@property --border-angle {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 0turn;
+}

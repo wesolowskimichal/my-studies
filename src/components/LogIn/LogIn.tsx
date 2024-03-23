@@ -1,10 +1,12 @@
 import React, { useState, FormEvent } from 'react'
 import styles from './LogIn.module.scss'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import logo from '../../assets/logo-long.png'
 
 function LogIn() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const navigate = useNavigate()
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -13,6 +15,12 @@ function LogIn() {
 
   return (
     <div key="login-page-vertical-wrapper" className={styles.VerticalWrapper}>
+      <div className={styles.ParentHeaderWrapper}>
+        <div className={styles.ContentWrapper}>
+          <img src={logo} alt="logo" onClick={() => navigate('/')} />
+        </div>
+      </div>
+
       <div key="login-page-header-wrapper" className={styles.HeaderWrapper}>
         <h1>Login</h1>
         <div key="login-page-wrapper" className={styles.Wrapper}>

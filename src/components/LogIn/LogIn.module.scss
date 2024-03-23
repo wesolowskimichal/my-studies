@@ -5,6 +5,27 @@ $element-width: 50%;
 .VerticalWrapper {
   height: 90vh;
   display: flex;
+  flex-direction: column;
+
+  .ParentHeaderWrapper {
+    width: 100%;
+    height: 50px;
+
+    .ContentWrapper {
+      height: 100%;
+      padding: 0.3rem;
+      display: flex;
+
+      img {
+        width: auto;
+        max-height: 100%;
+      }
+
+      img:hover {
+        cursor: pointer;
+      }
+    }
+  }
 
   .HeaderWrapper {
     flex-basis: 100%;
