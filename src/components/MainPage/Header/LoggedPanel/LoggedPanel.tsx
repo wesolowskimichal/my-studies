@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import Dropdown, { MenuItem } from '../../../Dropdown/Dropdown'
 import styles from './LoggedPanel.module.scss'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 interface LoggedPanelProps {
   currentElement: string
@@ -9,11 +9,19 @@ interface LoggedPanelProps {
 }
 
 function LoggedPanel({ currentElement, setCurrentElement }: LoggedPanelProps) {
+  const navigate = useNavigate()
   const menuItems: MenuItem[] = [
-    { itemTitle: 'Profil', itemOnClick: () => console.log('Profil') },
-    { itemTitle: 'Oceny', itemOnClick: () => console.log('Oceny') },
-    { itemTitle: 'Wiadomości', itemOnClick: () => console.log('Wiadomości') },
-    { itemTitle: 'Wyloguj', itemOnClick: () => console.log('Wyloguj') }
+    { itemTitle: 'Profil', itemOnClick: () => console.log('Profil'), redirect: '/' },
+    { itemTitle: 'Oceny', itemOnClick: () => console.log('Oceny'), redirect: '/' },
+    { itemTitle: 'Wiadomości', itemOnClick: () => console.log('Wiadomości'), redirect: '/' },
+    {
+      itemTitle: 'Wyloguj',
+      itemOnClick: () => {
+        localStorage.removeItem('accessToken')
+        localStorage.removeItem('refreshToken')
+      },
+      redirect: '/login'
+    }
   ]
 
   return (

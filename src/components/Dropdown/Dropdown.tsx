@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import styles from './Dropdown.module.scss'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo-guest.png'
 
 export interface MenuItem {
   itemTitle: string
   itemOnClick: () => void
+  redirect: string
 }
 
 interface DropdownProps {
@@ -18,7 +19,6 @@ function Dropdown({ title, menuItems }: DropdownProps) {
   const [headerClass, setHeaderClass] = useState('')
 
   return (
-    // implement when on hover by mouseenter event and set animation duration
     <div
       className={styles.Wrapper}
       onMouseLeave={() => {
@@ -36,14 +36,14 @@ function Dropdown({ title, menuItems }: DropdownProps) {
         }}
       />
       <div className={styles.Menu} style={{ visibility: isOpen ? 'visible' : 'hidden' }}>
-        {menuItems.map(({ itemTitle, itemOnClick }, index) => (
+        {menuItems.map(({ itemTitle, itemOnClick, redirect }, index) => (
           <div
             key={index}
             onClick={itemOnClick}
             className={`${styles.MenuItem} ${isOpen && styles.Show}`}
             style={{ transitionDelay: `${index / 10}s` }}
           >
-            <Link to="/">{itemTitle}</Link>
+            <Link to={redirect}>{itemTitle}</Link>
           </div>
         ))}
       </div>

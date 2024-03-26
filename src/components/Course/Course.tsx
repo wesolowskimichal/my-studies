@@ -8,7 +8,12 @@ interface CourseProps {
 
 function Course({ repository }: CourseProps) {
   return (
-    <Link to={repository.url} className={styles.Wrapper}>
+    <Link
+      to={{
+        pathname: `/course/${repository.id}`
+      }}
+      className={styles.Wrapper}
+    >
       <img src={`${import.meta.env.VITE_APP_API_URL}${repository.picture}`} alt="Course Image" />
       <h2>{repository.name}</h2>
       <p>

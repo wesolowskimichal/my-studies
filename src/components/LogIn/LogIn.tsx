@@ -1,16 +1,61 @@
-import React, { useState, FormEvent } from 'react'
+import React, { useState, FormEvent, Dispatch, SetStateAction, useEffect } from 'react'
 import styles from './LogIn.module.scss'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo-long.png'
+import axios from 'axios'
+import { getUserFromApi } from '../api/functions'
 
 function LogIn() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const apiUser = await getUserFromApi()
+        console.log(apiUser)
+        navigate('/')
+      } catch (error) {}
+    }
+    fetchUser()
+  }, [])
+
+  const getTokenFromAPI = async () => {
+    try {
+      const response = await axios.post(
+        '/api/token/',
+        {
+          username: email,
+          password: password
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+      if (response.status !== 200) {
+        throw new Error('Bad response status')
+      }
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  }
+
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log('logging in: ' + email + ' ' + password)
+    try {
+      const token = await getTokenFromAPI()
+      const access = token.access
+      const refresh = token.refresh
+      localStorage.setItem('accessToken', access)
+      localStorage.setItem('refreshToken', refresh)
+      navigate('/')
+    } catch (error) {
+      console.error('Error fetching user: ', error)
+    }
   }
 
   return (
@@ -32,7 +77,7 @@ function LogIn() {
           </div>
           <form onSubmit={handleLogin} key="login-page-form">
             <input
-              type="email"
+              type="text"
               name="email-input"
               id="email-input"
               placeholder="Email Address"

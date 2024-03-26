@@ -1,10 +1,10 @@
 export interface AccountType {
-  id: Number
+  id: string
   type: string
 }
 
 export interface User {
-  id: Number
+  id: string
   first_name: string
   last_name: string
   user_type: AccountType
@@ -12,7 +12,7 @@ export interface User {
 }
 
 export interface Repository {
-  id: Number
+  id: string
   name: string
   picture: string
   owners: User[]
@@ -20,14 +20,14 @@ export interface Repository {
 }
 
 export interface RepositoryEnrolment {
-  id: Number
+  id: string
   user: User
   repository: Repository
   status: boolean
 }
 
 export interface RepositoryPost {
-  id: Number
+  id: string
   owner: User
   repository: Repository
   title: string
@@ -40,7 +40,7 @@ export interface RepositoryPost {
 }
 
 export interface RepositoryTaskResponse {
-  id: Number
+  id: string
   owner: User
   task: RepositoryPost
   attachment: File
