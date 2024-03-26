@@ -1,0 +1,40 @@
+@import '../../utils/variables.scss';
+
+.Wrapper {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid $background-color-secondary;
+  box-shadow: 0 0 10px $decoration-color-dark;
+  padding: 1rem;
+  text-decoration: none;
+  color: $font-color;
+
+  img {
+    height: 250px;
+    width: 100%;
+  }
+
+  h2 {
+    text-align: center;
+    border-bottom: 1px solid $decoration-color-dark;
+  }
+
+  &::before {
+    border-radius: 50%;
+    background: #94f3e4;
+    transition: 0.5s;
+    transform: scale(0.9);
+  }
+
+  &:hover::before {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #94f3e4;
+  }
+
+  &:hover {
+    color: #94f3e4;
+    box-shadow: 0 0 5px #94f3e4;
+    text-shadow: 0 0 5px #94f3e4;
+    transition-duration: 0.6s;
+  }
+}

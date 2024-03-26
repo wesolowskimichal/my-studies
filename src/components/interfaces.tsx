@@ -8,14 +8,15 @@ export interface User {
   first_name: string
   last_name: string
   user_type: AccountType
-  picture: ImageBitmap
+  picture: string
 }
 
 export interface Repository {
   id: Number
   name: string
-  picture: ImageBitmap
+  picture: string
   owners: User[]
+  url: string
 }
 
 export interface RepositoryEnrolment {

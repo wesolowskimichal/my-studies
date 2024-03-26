@@ -5,12 +5,17 @@ $header-height: 50px;
 .Wrapper {
   width: 100%;
   height: $header-height;
+  z-index: 100;
+  position: sticky;
+  top: 0;
+  background-color: $background-color;
 
   .ContentWrapper {
     height: 100%;
     padding: 0.3rem;
     border: 1px solid $background-color-secondary;
     box-shadow: 0 0 10px #94f3e4;
+    background-color: $background-color;
 
     display: flex;
 
@@ -27,6 +32,7 @@ $header-height: 50px;
       column-gap: 4rem;
       grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
       align-items: baseline;
+      background-color: $background-color;
 
       div:last-of-type {
         grid-column: 7;
