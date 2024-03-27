@@ -2,8 +2,9 @@ import styles from './Header.module.scss'
 import logo from '../../../assets/logo.png'
 import LoggedPanel from './LoggedPanel/LoggedPanel'
 import { Link } from 'react-router-dom'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { User } from '../../interfaces'
+import { getUserFromApi } from '../../api/functions'
 
 interface HeaderProps {
   currentElement: string
@@ -11,9 +12,18 @@ interface HeaderProps {
   user: User | undefined
 }
 
-function Header({ currentElement, setCurrentElement, user }: HeaderProps) {
-  console.log(user)
-  const isLogged = user !== undefined
+function Header({ currentElement, setCurrentElement }: HeaderProps) {
+  const [isLogged, setIsLogged] = useState(false)
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const apiUser = await getUserFromApi()
+        setIsLogged(true)
+      } catch (error) {}
+    }
+    fetchUser()
+  }, [])
   return (
     <div className={styles.Wrapper}>
       <div className={styles.ContentWrapper}>

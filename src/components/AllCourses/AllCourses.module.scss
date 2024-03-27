@@ -1,8 +1,33 @@
+@import '../../utils/variables.scss';
+
 .Wrapper {
   padding-left: 15%;
   padding-right: 15%;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  column-gap: 2rem;
-  row-gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .FindBox {
+    width: 40%;
+    margin: 0 auto;
+    margin-bottom: 1rem;
+
+    input {
+      width: 100%;
+      padding: 0.7rem;
+      margin: 0.5rem;
+      margin-bottom: 0rem;
+      font-size: 1.1rem;
+      border: 0px;
+      border: 1px solid $decoration-color-dark;
+      background-color: $background-color;
+    }
+  }
+
+  .Courses {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 2rem;
+    row-gap: 2rem;
+  }
 }
