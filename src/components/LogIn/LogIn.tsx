@@ -16,7 +16,9 @@ function LogIn() {
         const apiUser = await getUserFromApi()
         console.log(apiUser)
         navigate('/')
-      } catch (error) {}
+      } catch (error) {
+        console.error(error)
+      }
     }
     fetchUser()
   }, [])
@@ -35,9 +37,6 @@ function LogIn() {
           }
         }
       )
-      if (response.status !== 200) {
-        throw new Error('Bad response status')
-      }
       return response.data
     } catch (error) {
       throw error
@@ -48,6 +47,7 @@ function LogIn() {
     e.preventDefault()
     try {
       const token = await getTokenFromAPI()
+      console.log(token)
       const access = token.access
       const refresh = token.refresh
       localStorage.setItem('accessToken', access)

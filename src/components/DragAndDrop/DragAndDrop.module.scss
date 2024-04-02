@@ -1,0 +1,79 @@
+.Wrapper {
+  height: 300px;
+  padding: 1rem;
+  margin: 1rem;
+  border: 1px solid #eee;
+  background-color: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+
+  .Files {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    row-gap: 0.4rem;
+
+    p {
+      text-align: center;
+    }
+
+    .File {
+      display: grid;
+      grid-template-columns: 8fr 4fr 1fr;
+      align-items: center;
+
+      img {
+        border-radius: 2rem;
+        background-color: #e8566c;
+        padding: 0.4rem;
+        margin: 0 auto;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      span {
+        border-right: 1px solid #eee;
+
+        &:nth-of-type(2) {
+          margin-right: 0.4rem;
+          text-align: center;
+        }
+      }
+
+      &:nth-of-type(1) {
+        border-bottom: 1px solid #eee;
+        margin-bottom: 1rem;
+      }
+    }
+  }
+
+  label {
+    text-align: center;
+    width: fit-content;
+    margin: 0 auto;
+    padding: 0.5rem;
+    border: 1px solid #37aa9c;
+    box-shadow: 0 0 10px 1px #37aa9c;
+    border-radius: 2rem;
+
+    &:hover {
+      transition-duration: 0.6s;
+      box-shadow: 0 0 1px 1px #37aa9c;
+      cursor: pointer;
+    }
+  }
+
+  .Footer {
+    margin-top: 1rem;
+    display: flex;
+
+    button {
+      background-color: #78e856;
+      color: #1a1a1a;
+      font-weight: bold;
+    }
+  }
+}

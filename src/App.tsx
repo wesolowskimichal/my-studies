@@ -8,7 +8,6 @@ import { useState } from 'react'
 import { User } from './components/interfaces'
 
 function App() {
-  const [user, setUser] = useState<User>()
   const router = createBrowserRouter([
     {
       path: '/',

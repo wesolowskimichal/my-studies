@@ -9,9 +9,6 @@ export const getUserFromApi = async () => {
     }
     const token = jwtDecode(accessToken)
     const response = await axios.get(`/api/user/${token.user_id}`)
-    if (response.status !== 200) {
-      throw new Error('Bad response status')
-    }
     return response.data
   } catch (error) {
     throw error

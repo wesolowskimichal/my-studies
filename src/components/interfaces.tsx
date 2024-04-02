@@ -32,7 +32,7 @@ export interface RepositoryPost {
   repository: Repository
   title: string
   description: string
-  attachment: File
+  attachment?: string
   isTask: boolean
   pinned: boolean
   due_to: Date

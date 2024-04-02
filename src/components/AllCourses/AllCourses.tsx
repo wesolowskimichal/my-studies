@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { AccountType, Repository, User } from '../interfaces'
+import { Repository } from '../interfaces'
 
 import Course from '../Course/Course'
 import styles from './AllCourses.module.scss'

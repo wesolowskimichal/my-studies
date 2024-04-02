@@ -9,7 +9,6 @@ import { getUserFromApi } from '../../api/functions'
 interface HeaderProps {
   currentElement: string
   setCurrentElement: Dispatch<SetStateAction<string>>
-  user: User | undefined
 }
 
 function Header({ currentElement, setCurrentElement }: HeaderProps) {
