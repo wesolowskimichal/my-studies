@@ -2,8 +2,8 @@ import React, { useState, FormEvent, Dispatch, SetStateAction, useEffect } from 
 import styles from './LogIn.module.scss'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo-long.png'
-import axios from 'axios'
-import { getUserFromApi } from '../api/functions'
+import ApiService from '../../services/API/ApiService'
+import { ApiResponse } from '../../services/API/ApiResponse'
 
 function LogIn() {
   const [email, setEmail] = useState('')
@@ -11,51 +11,25 @@ function LogIn() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const apiUser = await getUserFromApi()
-        console.log(apiUser)
-        navigate('/')
-      } catch (error) {
-        console.error(error)
-      }
+    if (!ApiService.getInstance().isTokenExpired()) {
+      navigate('/')
     }
-    fetchUser()
   }, [])
-
-  const getTokenFromAPI = async () => {
-    try {
-      const response = await axios.post(
-        '/api/token/',
-        {
-          username: email,
-          password: password
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      )
-      return response.data
-    } catch (error) {
-      throw error
-    }
-  }
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    try {
-      const token = await getTokenFromAPI()
-      console.log(token)
-      const access = token.access
-      const refresh = token.refresh
-      localStorage.setItem('accessToken', access)
-      localStorage.setItem('refreshToken', refresh)
-      navigate('/')
-    } catch (error) {
-      console.error('Error fetching user: ', error)
-    }
+    const response = await ApiService.getInstance()
+      .getToken(email, password)
+      .then(response => {
+        console.log(response)
+        if (response.responseCode === ApiResponse.POSITIVE) {
+          localStorage.setItem('accessToken', response.data!.access)
+          localStorage.setItem('refreshToken', response.data!.refresh)
+          navigate('/')
+        } else {
+          console.log('error while obtaining token')
+        }
+      })
   }
 
   return (

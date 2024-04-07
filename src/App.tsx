@@ -4,8 +4,6 @@ import Register from './components/Register/Register'
 import MainPage from './components/MainPage/MainPage'
 import CourseDetails from './components/CourseDetails/CourseDetails'
 import JWTester from './components/JWTester/JWTester'
-import { useState } from 'react'
-import { User } from './components/interfaces'
 
 function App() {
   const router = createBrowserRouter([

@@ -1,11 +1,11 @@
-import axios from 'axios'
 import { Repository, RepositoryPost } from '../interfaces'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Header from '../MainPage/Header/Header'
 import styles from './CourseDetails.module.scss'
-import { getUserFromApi } from '../api/functions'
 import CoursePosts from './CoursePosts/CoursePosts'
+import ApiService from '../../services/API/ApiService'
+import { ApiResponse } from '../../services/API/ApiResponse'
 
 function CourseDetails() {
   enum ContentType {
@@ -19,68 +19,44 @@ function CourseDetails() {
   const [contentType, setContentType] = useState<ContentType>(ContentType.Anonymous)
 
   const { id } = useParams<{ id: string }>()
-  const token = localStorage.getItem('accessToken')
-  const config = {
-    headers: { Authorization: `Bearer ${token}` }
-  }
-
-  const getRepositoryFromAPI = async () => {
-    try {
-      const response = await axios.get(`/api/repository/${id}/`)
-      return response.data
-    } catch (error) {
-      throw error
-    }
-  }
-
-  const getRepositoryPostsFromAPI = async () => {
-    try {
-      const response = await axios.get(`/api/repository/${id}/posts/`, config)
-      return response.data
-    } catch (error) {
-      throw error
-    }
-  }
 
   useEffect(() => {
-    const checkIfLogged = async () => {
-      try {
-        await getUserFromApi()
-        setContentType(ContentType.Logged)
-      } catch (error) {
-        setContentType(ContentType.Anonymous)
-      }
-    }
     const getPosts = async () => {
-      try {
-        const posts = await getRepositoryPostsFromAPI()
-        posts.sort((a: RepositoryPost, b: RepositoryPost) => {
-          const dateA = new Date(a.created_at)
-          const dateB = new Date(b.created_at)
-          if (a.pinned && !b.pinned) {
-            return -1
-          } else if (!a.pinned && b.pinned) {
-            return 1
-          } else {
-            return dateA - dateB
-          }
-        })
-        setRepositoryPosts(posts)
-        setContentType(ContentType.Authorized)
-      } catch (error) {
-        console.error('Error fetching course details: ', error)
+      const response = await ApiService.getInstance().getRepositoryPosts(id!)
+      if (response.responseCode !== ApiResponse.POSITIVE) {
+        console.error(`Error fetching course: ' ${response.responseCode}`)
+        if (response.responseCode === ApiResponse.FORBIDDEN) {
+          setContentType(ContentType.Logged)
+        } else if (response.responseCode === ApiResponse.UNAUTHORIZED) {
+          setContentType(ContentType.Anonymous)
+        }
+        return
       }
+      const posts = response.data!
+      posts.sort((a: RepositoryPost, b: RepositoryPost) => {
+        const dateA = new Date(a.created_at)
+        const dateB = new Date(b.created_at)
+        if (a.pinned && !b.pinned) {
+          return -1
+        } else if (!a.pinned && b.pinned) {
+          return 1
+        } else {
+          return dateA - dateB
+        }
+      })
+      setRepositoryPosts(posts)
+      setContentType(ContentType.Authorized)
     }
 
     const getCourse = async () => {
-      try {
-        const repository = await getRepositoryFromAPI()
-        setRepository(repository)
-        await checkIfLogged()
-        await getPosts()
-      } catch (error) {
-        console.error('Error fetching course: ', error)
+      const response = await ApiService.getInstance().getRepository(id!)
+      if (response.responseCode !== ApiResponse.POSITIVE) {
+        console.error(`Error fetching course: ' ${response.responseCode}`)
+        return
       }
+      const repository = response.data!
+      setRepository(repository)
+      await getPosts()
     }
     getCourse()
   }, [])

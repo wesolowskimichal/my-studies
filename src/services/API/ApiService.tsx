@@ -1,5 +1,12 @@
-import { Repository, RepositoryPost, User } from '../../components/interfaces'
+import { Repository, RepositoryPost, Token, User } from '../../components/interfaces'
 import axios, { AxiosRequestConfig } from 'axios'
+import { ApiResponse } from './ApiResponse'
+import { jwtDecode } from 'jwt-decode'
+
+interface ApiServiceResponse<T> {
+  data?: T
+  responseCode: ApiResponse
+}
 
 class ApiService {
   private static instance: ApiService
@@ -13,60 +20,102 @@ class ApiService {
     return ApiService.instance
   }
 
-  public async getUser(): Promise<User | ApiResponse> {
+  public isTokenExpired(): Boolean {
     try {
-      const accessToken = localStorage.getItem('accessToken')
-      if (!accessToken) {
-        return ApiResponse.UNAUTHORIZED
+      const token = localStorage.getItem('accessToken')
+      if (!token) {
+        return true
+      }
+      const decodedToken = jwtDecode(token)
+      const currentTime = Date.now() / 1000
+      return decodedToken.exp! < currentTime
+    } catch (error) {
+      return true
+    }
+  }
+
+  public async getToken(username: string, password: string): Promise<ApiServiceResponse<Token>> {
+    try {
+      const response = await axios.post('/api/token/', {
+        username: username,
+        password: password
+      })
+      return { data: response.data, responseCode: ApiResponse.POSITIVE }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const statusCode = error.response?.status
+        return { data: undefined, responseCode: this.handleError(statusCode) }
+      }
+      return { data: undefined, responseCode: ApiResponse.BAD_RESPONSE }
+    }
+  }
+
+  public async getUser(): Promise<ApiServiceResponse<User>> {
+    try {
+      if (this.isTokenExpired()) {
+        return { data: undefined, responseCode: ApiResponse.UNAUTHORIZED }
       }
       const response = await axios.get('/api/user/', this.getConfig())
-      return response.data
+      return { data: response.data, responseCode: ApiResponse.POSITIVE }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const statusCode = error.response?.status
-        return this.handleError(statusCode)
+        return { data: undefined, responseCode: this.handleError(statusCode) }
       }
-      return ApiResponse.BAD_RESPONSE
+      return { data: undefined, responseCode: ApiResponse.BAD_RESPONSE }
     }
   }
 
-  public async getRepository(id: string): Promise<Repository | ApiResponse> {
+  public async getRepositories(): Promise<ApiServiceResponse<Repository[]>> {
+    try {
+      const response = await axios.get('/api/repositories/list/')
+      return { data: response.data, responseCode: ApiResponse.POSITIVE }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const statusCode = error.response?.status
+        return { data: undefined, responseCode: this.handleError(statusCode) }
+      }
+      return { data: undefined, responseCode: ApiResponse.BAD_RESPONSE }
+    }
+  }
+
+  public async getRepository(id: string): Promise<ApiServiceResponse<Repository>> {
     try {
       const response = await axios.get(`/api/repository/${id}/`)
-      return response.data
+      return { data: response.data, responseCode: ApiResponse.POSITIVE }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const statusCode = error.response?.status
-        return this.handleError(statusCode)
+        return { data: undefined, responseCode: this.handleError(statusCode) }
       }
-      return ApiResponse.BAD_RESPONSE
+      return { data: undefined, responseCode: ApiResponse.BAD_RESPONSE }
     }
   }
 
-  public async getRepositoryPosts(repositoryId: string): Promise<RepositoryPost[] | ApiResponse> {
+  public async getRepositoryPosts(repositoryId: string): Promise<ApiServiceResponse<RepositoryPost[]>> {
     try {
-      const accessToken = localStorage.getItem('accessToken')
-      if (!accessToken) {
-        return ApiResponse.UNAUTHORIZED
+      if (this.isTokenExpired()) {
+        return { data: undefined, responseCode: ApiResponse.UNAUTHORIZED }
       }
       const response = await axios.get(`/api/repository/${repositoryId}/posts/`, this.getConfig())
-      return response.data
+      return { data: response.data, responseCode: ApiResponse.POSITIVE }
     } catch (error) {
       if (axios.isAxiosError(error)) {
+        console.log(error.message)
         const statusCode = error.response?.status
         // to do: when user has is not enrolled should return 403 not 401
         if (error.message === 'Incorrect authentication credentials.') {
-          return ApiResponse.FORBIDDEN
+          return { data: undefined, responseCode: ApiResponse.FORBIDDEN }
         }
-        return this.handleError(statusCode)
+        return { data: undefined, responseCode: this.handleError(statusCode) }
       }
-      return ApiResponse.BAD_RESPONSE
+      return { data: undefined, responseCode: ApiResponse.BAD_RESPONSE }
     }
   }
 
   private getConfig(): AxiosRequestConfig<any> | undefined {
     const accessToken = localStorage.getItem('accessToken')
-    if (!accessToken) {
+    if (this.isTokenExpired()) {
       return undefined
     }
     return {
@@ -97,3 +146,5 @@ class ApiService {
     }
   }
 }
+
+export default ApiService

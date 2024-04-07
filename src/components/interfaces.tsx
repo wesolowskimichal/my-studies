@@ -3,6 +3,11 @@ export interface AccountType {
   type: string
 }
 
+export interface Token {
+  access: string
+  refresh: string
+}
+
 export interface User {
   id: string
   first_name: string

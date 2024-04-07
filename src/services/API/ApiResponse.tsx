@@ -1,4 +1,4 @@
-enum ApiResponse {
+export enum ApiResponse {
   POSITIVE = 200,
   BAD_RESPONSE = 400,
   UNAUTHORIZED = 401,

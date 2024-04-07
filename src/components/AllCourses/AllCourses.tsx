@@ -4,18 +4,8 @@ import { Repository } from '../interfaces'
 
 import Course from '../Course/Course'
 import styles from './AllCourses.module.scss'
-
-const apiResponse = async () => {
-  try {
-    const response = await axios.get('/api/repositories/list/')
-    if (response.status !== 200) {
-      throw new Error('Bad response status')
-    }
-    return response.data
-  } catch (error) {
-    throw error
-  }
-}
+import ApiService from '../../services/API/ApiService'
+import { ApiResponse } from '../../services/API/ApiResponse'
 
 function AllCourses() {
   const [courses, setCourses] = useState<Repository[]>([])
@@ -24,14 +14,13 @@ function AllCourses() {
 
   useEffect(() => {
     const getAllCourses = async () => {
-      try {
-        const repositories = await apiResponse()
-        console.log(repositories)
-        setCourses(repositories)
-        setVisibleCourses(courses)
-      } catch (error) {
-        console.error('Error fetching user: ', error)
+      const response = await ApiService.getInstance().getRepositories()
+      if (response.responseCode !== ApiResponse.POSITIVE) {
+        console.error(`Error fetching course: ' ${response.responseCode}`)
+        return
       }
+      const repositories = response.data!
+      setCourses(repositories)
     }
 
     getAllCourses()

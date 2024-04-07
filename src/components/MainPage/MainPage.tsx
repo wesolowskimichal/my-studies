@@ -3,23 +3,16 @@ import Header from './Header/Header'
 import AllCourses from '../AllCourses/AllCourses'
 import styles from './MainPage.module.scss'
 import { useNavigate } from 'react-router-dom'
-import { getUserFromApi } from '../api/functions'
+import ApiService from '../../services/API/ApiService'
 
 function MainPage() {
   const [currentElement, setCurrentElement] = useState('all-courses')
   const navigate = useNavigate()
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const apiUser = await getUserFromApi()
-        return apiUser
-      } catch (error) {
-        console.log(error)
-        navigate('/login')
-      }
+    if (ApiService.getInstance().isTokenExpired()) {
+      navigate('/login')
     }
-    fetchUser()
   }, [])
 
   const renderComponent = () => {
