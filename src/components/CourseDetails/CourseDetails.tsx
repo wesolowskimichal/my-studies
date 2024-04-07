@@ -51,7 +51,7 @@ function CourseDetails() {
     const getCourse = async () => {
       const response = await ApiService.getInstance().getRepository(id!)
       if (response.responseCode !== ApiResponse.POSITIVE) {
-        console.error(`Error fetching course: ' ${response.responseCode}`)
+        console.error(`Error fetching course: ${response.responseCode}`)
         return
       }
       const repository = response.data!

@@ -79,6 +79,22 @@ class ApiService {
     }
   }
 
+  public async getMyRepositories(): Promise<ApiServiceResponse<Repository[]>> {
+    try {
+      if (this.isTokenExpired()) {
+        return { data: undefined, responseCode: ApiResponse.UNAUTHORIZED }
+      }
+      const response = await axios.get('/api/user/repositories/', this.getConfig())
+      return { data: response.data, responseCode: ApiResponse.POSITIVE }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const statusCode = error.response?.status
+        return { data: undefined, responseCode: this.handleError(statusCode) }
+      }
+      return { data: undefined, responseCode: ApiResponse.BAD_RESPONSE }
+    }
+  }
+
   public async getRepository(id: string): Promise<ApiServiceResponse<Repository>> {
     try {
       const response = await axios.get(`/api/repository/${id}/`)

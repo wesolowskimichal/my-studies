@@ -1,9 +1,8 @@
-import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { Repository } from '../interfaces'
 
 import Course from '../Course/Course'
-import styles from './AllCourses.module.scss'
+import styles from './Courses.module.scss'
 import ApiService from '../../services/API/ApiService'
 import { ApiResponse } from '../../services/API/ApiResponse'
 
@@ -24,7 +23,6 @@ function AllCourses() {
     }
 
     getAllCourses()
-    console.log(courses)
   }, [])
 
   useEffect(() => {
