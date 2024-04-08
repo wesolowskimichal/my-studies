@@ -7,6 +7,9 @@ interface CourseProps {
 }
 
 function Course({ repository }: CourseProps) {
+  const pictureSrc = repository.picture.startsWith('http')
+    ? repository.picture
+    : `${import.meta.env.VITE_APP_API_URL}${repository.picture}`
   return (
     <Link
       to={{
@@ -14,7 +17,7 @@ function Course({ repository }: CourseProps) {
       }}
       className={styles.Wrapper}
     >
-      <img src={`${import.meta.env.VITE_APP_API_URL}${repository.picture}`} alt="Course Image" />
+      <img src={pictureSrc} alt="Course Image" />
       <h2>{repository.name}</h2>
       <p>
         <b>Prowadzący: </b>

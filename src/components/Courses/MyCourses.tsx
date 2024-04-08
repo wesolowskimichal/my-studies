@@ -10,16 +10,18 @@ function MyCourses() {
   const [courses, setCourses] = useState<Repository[]>([])
   const [visibleCourses, setVisibleCourses] = useState<Repository[]>([])
   const [search, setSearch] = useState('')
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     const getAllCourses = async () => {
       const response = await ApiService.getInstance().getMyRepositories()
       if (response.responseCode !== ApiResponse.POSITIVE) {
-        console.error(`Error fetching course: ${response.responseCode}`)
+        console.error(`Error fetching course: ' ${response.responseCode}`)
         return
       }
       const repositories = response.data!
       setCourses(repositories)
+      setLoaded(true)
     }
 
     getAllCourses()
@@ -35,28 +37,34 @@ function MyCourses() {
   }, [search, courses])
 
   return (
-    <div className={styles.Wrapper}>
-      <div className={styles.FindBox}>
-        <input
-          type="text"
-          name=""
-          id=""
-          placeholder="Szukaj kursu"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
-      </div>
-      <div className={styles.Courses}>
-        {courses.length > 0 ? (
-          visibleCourses.map((course, index) => (
-            <div key={index}>
-              <Course key={index} repository={course} />
-            </div>
-          ))
-        ) : (
-          <p>Loading...</p>
-        )}
-      </div>
+    <div className={styles.Wrapper} style={!loaded ? { height: '100vh' } : {}}>
+      {loaded ? (
+        <>
+          <div className={styles.FindBox}>
+            <input
+              type="text"
+              name=""
+              id=""
+              placeholder="Szukaj kursu"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+          </div>
+          <div className={styles.Courses}>
+            {courses.length > 0 ? (
+              visibleCourses.map((course, index) => (
+                <div key={index}>
+                  <Course repository={course} />
+                </div>
+              ))
+            ) : (
+              <div> Nie masz żadnych kursów</div>
+            )}
+          </div>
+        </>
+      ) : (
+        <div className="loader" style={{ gridColumn: '2 / 3' }}></div>
+      )}
     </div>
   )
 }

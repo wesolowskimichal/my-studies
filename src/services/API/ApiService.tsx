@@ -85,7 +85,11 @@ class ApiService {
         return { data: undefined, responseCode: ApiResponse.UNAUTHORIZED }
       }
       const response = await axios.get('/api/user/repositories/', this.getConfig())
-      return { data: response.data, responseCode: ApiResponse.POSITIVE }
+      let repositories: Repository[] = []
+      for (let responseElement of response.data) {
+        repositories.push(responseElement.repository)
+      }
+      return { data: repositories, responseCode: ApiResponse.POSITIVE }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const statusCode = error.response?.status
