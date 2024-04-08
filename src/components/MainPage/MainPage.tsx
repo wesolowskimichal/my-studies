@@ -8,7 +8,6 @@ import AllCourses from '../Courses/AllCourses'
 import ContentManagerService from '../../services/ContentManager/ContentManagerService'
 
 function MainPage() {
-  const [currentElement, setCurrentElement] = useState('all-courses')
   const contentManager = ContentManagerService.getInstance()
 
   // to do: change navigation to my-courses

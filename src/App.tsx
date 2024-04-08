@@ -4,8 +4,11 @@ import Register from './components/Register/Register'
 import MainPage from './components/MainPage/MainPage'
 import CourseDetails from './components/CourseDetails/CourseDetails'
 import JWTester from './components/JWTester/JWTester'
+import TokenManagerServiceWrapper from './services/TokenManager/TokenManagerServiceWrapper'
 
 function App() {
+  const tokenManagerServiceWrapper = TokenManagerServiceWrapper.getInstance()
+
   const router = createBrowserRouter([
     {
       path: '/',

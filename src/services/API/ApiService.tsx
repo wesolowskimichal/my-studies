@@ -2,6 +2,7 @@ import { Repository, RepositoryPost, Token, User } from '../../components/interf
 import axios, { AxiosRequestConfig } from 'axios'
 import { ApiResponse } from './ApiResponse'
 import { jwtDecode } from 'jwt-decode'
+import TokenManagerServiceWrapper from '../TokenManager/TokenManagerServiceWrapper'
 
 interface ApiServiceResponse<T> {
   data?: T
@@ -35,12 +36,18 @@ class ApiService {
   }
 
   public async getToken(username: string, password: string): Promise<ApiServiceResponse<Token>> {
+    const setTokenInManager = (token: string) => {
+      const decodedToken = jwtDecode(token)
+      TokenManagerServiceWrapper.getInstance().setTokenManagerService(decodedToken.exp!)
+    }
     try {
       const response = await axios.post('/api/token/', {
         username: username,
         password: password
       })
-      return { data: response.data, responseCode: ApiResponse.POSITIVE }
+      const token: Token = response.data
+      setTokenInManager(token.access)
+      return { data: token, responseCode: ApiResponse.POSITIVE }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const statusCode = error.response?.status
