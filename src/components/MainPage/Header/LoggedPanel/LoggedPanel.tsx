@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from 'react'
 import Dropdown, { MenuItem } from '../../../Dropdown/Dropdown'
 import styles from './LoggedPanel.module.scss'
 import { Link, useNavigate } from 'react-router-dom'
-import ContentManagerService from '../../../../services/Content/ContentManagerServise'
+import ContentManagerService from '../../../../services/ContentManager/ContentManagerService'
 
 function LoggedPanel() {
   const navigate = useNavigate()

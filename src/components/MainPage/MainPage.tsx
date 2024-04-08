@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import ApiService from '../../services/API/ApiService'
 import MyCourses from '../Courses/MyCourses'
 import AllCourses from '../Courses/AllCourses'
-import ContentManagerService from '../../services/Content/ContentManagerServise'
+import ContentManagerService from '../../services/ContentManager/ContentManagerService'
 
 function MainPage() {
   const [currentElement, setCurrentElement] = useState('all-courses')
