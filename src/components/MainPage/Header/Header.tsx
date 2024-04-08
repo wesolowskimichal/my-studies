@@ -5,12 +5,7 @@ import { Link } from 'react-router-dom'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import ApiService from '../../../services/API/ApiService'
 
-interface HeaderProps {
-  currentElement: string
-  setCurrentElement: Dispatch<SetStateAction<string>>
-}
-
-function Header({ currentElement, setCurrentElement }: HeaderProps) {
+function Header() {
   const [isLogged, setIsLogged] = useState(false)
 
   useEffect(() => {
@@ -25,10 +20,10 @@ function Header({ currentElement, setCurrentElement }: HeaderProps) {
         <img src={logo} alt="logo" />
         <div className={`${styles.Elements}`}>
           {isLogged ? (
-            <LoggedPanel currentElement={currentElement} setCurrentElement={setCurrentElement} />
+            <LoggedPanel />
           ) : (
             <div>
-              <Link to="/login" className={styles.Element} onClick={() => setCurrentElement('')}>
+              <Link to="/login" className={styles.Element} onClick={() => {}}>
                 <span>Zaloguj się</span>
               </Link>
             </div>

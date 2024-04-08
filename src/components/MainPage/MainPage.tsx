@@ -5,9 +5,11 @@ import { useNavigate } from 'react-router-dom'
 import ApiService from '../../services/API/ApiService'
 import MyCourses from '../Courses/MyCourses'
 import AllCourses from '../Courses/AllCourses'
+import ContentManagerService from '../../services/Content/ContentManagerServise'
 
 function MainPage() {
   const [currentElement, setCurrentElement] = useState('all-courses')
+  const contentManager = ContentManagerService.getInstance()
 
   // to do: change navigation to my-courses
   const navigate = useNavigate()
@@ -19,7 +21,7 @@ function MainPage() {
   }, [])
 
   const renderComponent = () => {
-    switch (currentElement) {
+    switch (contentManager.getRender()) {
       case 'all-courses':
         return <AllCourses />
       case 'my-courses':
@@ -31,7 +33,7 @@ function MainPage() {
 
   return (
     <div>
-      <Header currentElement={currentElement} setCurrentElement={setCurrentElement} />
+      <Header />
       <div className={styles.Wrapper}>{renderComponent()}</div>
     </div>
   )

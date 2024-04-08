@@ -1,5 +1,5 @@
 import { Repository, RepositoryPost } from '../interfaces'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Header from '../MainPage/Header/Header'
 import styles from './CourseDetails.module.scss'
@@ -11,12 +11,13 @@ function CourseDetails() {
   enum ContentType {
     Logged = 'logged',
     Authorized = 'authorized',
-    Anonymous = 'anonymous'
+    Anonymous = 'anonymous',
+    Loading = 'loader'
   }
 
   const [repository, setRepository] = useState<Repository>()
   const [repositoryPosts, setRepositoryPosts] = useState<RepositoryPost[]>()
-  const [contentType, setContentType] = useState<ContentType>(ContentType.Anonymous)
+  const [contentType, setContentType] = useState<ContentType>(ContentType.Loading)
 
   const { id } = useParams<{ id: string }>()
 
@@ -87,12 +88,14 @@ function CourseDetails() {
             </div>
           </div>
         )
+      case ContentType.Loading:
+        return <div className="loader"></div>
     }
   }
 
   return (
     <>
-      <Header currentElement="all-courses" setCurrentElement={() => {}} />
+      <Header />
       <div className={styles.Wrapper}>
         <div className={styles.Header}>
           <img src={`${import.meta.env.VITE_APP_API_URL}${repository?.picture}`} alt="Course Image" />
