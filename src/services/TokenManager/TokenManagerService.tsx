@@ -1,20 +1,21 @@
 class TokenManagerService {
   private static instance: TokenManagerService
   private exp: number
+  private interval: any
 
   private constructor(exp: number) {
     this.exp = exp
     this.startTokenExpirationCheck()
   }
 
-  // todo:
-  //    1) ustawic na roznice miedzy exp a curr
-  //    2) dodac sprawdzanie usuniecie tokenu oraz wystapienie api resonse unauthorized
-  //    3) stop na wylogowaniu
   private startTokenExpirationCheck() {
-    setInterval(() => {
+    this.interval = setInterval(() => {
+      console.log('a')
       if (this.isTokenExpired()) {
         this.showTokenExpiredAlert()
+        clearInterval(this.interval)
+      } else if (!localStorage.getItem('accessToken')) {
+        clearInterval(this.interval)
       }
     }, 1000)
   }
@@ -26,6 +27,7 @@ class TokenManagerService {
 
   private showTokenExpiredAlert() {
     alert('Token wygasł! Zaloguj się ponownie.')
+    localStorage.removeItem('accessToken')
   }
 
   public static getInstance(exp: number): TokenManagerService {

@@ -5,12 +5,21 @@ import Course from '../Course/Course'
 import styles from './Courses.module.scss'
 import ApiService from '../../services/API/ApiService'
 import { ApiResponse } from '../../services/API/ApiResponse'
+import { useNavigate } from 'react-router-dom'
 
 function MyCourses() {
   const [courses, setCourses] = useState<Repository[]>([])
   const [visibleCourses, setVisibleCourses] = useState<Repository[]>([])
   const [search, setSearch] = useState('')
   const [loaded, setLoaded] = useState(false)
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (ApiService.getInstance().isTokenExpired()) {
+      navigate('/login')
+    }
+  }, [])
 
   useEffect(() => {
     const getAllCourses = async () => {

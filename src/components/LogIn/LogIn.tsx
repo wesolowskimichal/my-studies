@@ -4,6 +4,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo-long.png'
 import ApiService from '../../services/API/ApiService'
 import { ApiResponse } from '../../services/API/ApiResponse'
+import TokenManagerServiceWrapper from '../../services/TokenManager/TokenManagerServiceWrapper'
 
 function LogIn() {
   const [email, setEmail] = useState('')
@@ -21,10 +22,10 @@ function LogIn() {
     const response = await ApiService.getInstance()
       .getToken(email, password)
       .then(response => {
-        console.log(response)
         if (response.responseCode === ApiResponse.POSITIVE) {
           localStorage.setItem('accessToken', response.data!.access)
           localStorage.setItem('refreshToken', response.data!.refresh)
+          TokenManagerServiceWrapper.launch().setTokenManagerService()
           navigate('/')
         } else {
           console.log('error while obtaining token')

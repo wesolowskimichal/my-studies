@@ -1,3 +1,4 @@
+import { jwtDecode } from 'jwt-decode'
 import TokenManagerService from './TokenManagerService'
 
 class TokenManagerServiceWrapper {
@@ -6,15 +7,22 @@ class TokenManagerServiceWrapper {
 
   private constructor() {}
 
-  public static getInstance(): TokenManagerServiceWrapper {
+  public static launch(): TokenManagerServiceWrapper {
     if (!TokenManagerServiceWrapper.instance) {
       TokenManagerServiceWrapper.instance = new TokenManagerServiceWrapper()
     }
     return TokenManagerServiceWrapper.instance
   }
 
-  public setTokenManagerService(exp: number): void {
-    this.serviceTkm = TokenManagerService.getInstance(exp)
+  public setTokenManagerService(): void {
+    const accessToken = localStorage.getItem('accessToken')
+    if (!accessToken) return
+    try {
+      const decodedToken = jwtDecode(accessToken)
+      this.serviceTkm = TokenManagerService.getInstance(decodedToken.exp!)
+    } catch (error) {
+      return
+    }
   }
 
   public getTokenManagerService(): TokenManagerService | undefined {

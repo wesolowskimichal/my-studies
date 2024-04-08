@@ -5,9 +5,11 @@ import MainPage from './components/MainPage/MainPage'
 import CourseDetails from './components/CourseDetails/CourseDetails'
 import JWTester from './components/JWTester/JWTester'
 import TokenManagerServiceWrapper from './services/TokenManager/TokenManagerServiceWrapper'
+import ContentManagerService from './services/ContentManager/ContentManagerService'
 
 function App() {
-  const tokenManagerServiceWrapper = TokenManagerServiceWrapper.getInstance()
+  TokenManagerServiceWrapper.launch().setTokenManagerService()
+  ContentManagerService.getInstance()
 
   const router = createBrowserRouter([
     {
