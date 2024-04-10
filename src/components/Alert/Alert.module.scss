@@ -1,0 +1,87 @@
+.Wrapper {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .ContentWrapper {
+    display: flex;
+    justify-content: center;
+
+    .Items {
+      padding: 1rem;
+      background-color: rgba(238, 98, 119, 0.367);
+      box-shadow: 0 0 7px 2px #ecc09b;
+      border-radius: 2rem;
+      width: 250px;
+
+      .Buttons {
+        padding: 1rem;
+        display: flex;
+        justify-content: space-around;
+
+        button {
+          margin: 0 1rem 0 1rem;
+          padding: 0.4rem;
+          border-radius: 0.6rem;
+          border: 1px solid rgba(238, 98, 119);
+          background-color: rgb(192, 77, 94);
+
+          &:hover {
+            transition-duration: 0.7s;
+            cursor: pointer;
+            background-color: rgb(198, 50, 72);
+          }
+        }
+      }
+      p {
+        margin-top: 0;
+        text-align: center;
+      }
+
+      .CloseButton {
+        background-color: rgb(198, 50, 72);
+        border: 1px solid rgba(238, 98, 119);
+        border-radius: 2rem;
+      }
+    }
+  }
+}
+
+.Timer {
+  display: grid;
+  justify-content: end;
+  padding-right: 1rem;
+}
+
+.Circle {
+  transform: rotate(-90deg) translateY(10px);
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.ProgressCircle {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: countdown 60s linear forwards;
+}
+
+@keyframes countdown {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.TimerText {
+  font-size: 18px;
+  fill: white;
+  transform: rotate(90deg);
+  transform-origin: 50% 50%;
+  text-anchor: middle;
+  dominant-baseline: central;
+}

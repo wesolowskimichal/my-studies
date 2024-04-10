@@ -1,6 +1,6 @@
 import React, { useState, FormEvent, Dispatch, SetStateAction, useEffect } from 'react'
 import styles from './LogIn.module.scss'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo-long.png'
 import ApiService from '../../services/API/ApiService'
 import { ApiResponse } from '../../services/API/ApiResponse'
@@ -10,6 +10,8 @@ function LogIn() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
+  const { state } = useLocation()
+  const { sessionTimeOut } = state ? state : false
 
   useEffect(() => {
     if (!ApiService.getInstance().isTokenExpired()) {
@@ -34,17 +36,17 @@ function LogIn() {
   }
 
   return (
-    <div key="login-page-vertical-wrapper" className={styles.VerticalWrapper}>
+    <div className={styles.VerticalWrapper}>
       <div className={styles.ParentHeaderWrapper}>
         <div className={styles.ContentWrapper}>
           <img src={logo} alt="logo" onClick={() => navigate('/')} />
         </div>
       </div>
 
-      <div key="login-page-header-wrapper" className={styles.HeaderWrapper}>
+      <div className={styles.HeaderWrapper}>
         <h1>Login</h1>
-        <div key="login-page-wrapper" className={styles.Wrapper}>
-          <div key="login-register-wrapper" className={styles.LoginRegisterWrapper}>
+        <div className={styles.Wrapper}>
+          <div className={styles.LoginRegisterWrapper}>
             <button className={`${styles.defaultButton} ${styles.selectedButton}`}>Login</button>
             <Link to="/register" className={styles.defaultButton}>
               Register
@@ -71,6 +73,14 @@ function LogIn() {
           </form>
         </div>
       </div>
+      {sessionTimeOut && (
+        <div className={styles.SessionTimeOut}>
+          <p>
+            Twoja sesja wygasła! <br />
+            Zaloguj się ponownie aby kontynuować
+          </p>
+        </div>
+      )}
     </div>
   )
 }

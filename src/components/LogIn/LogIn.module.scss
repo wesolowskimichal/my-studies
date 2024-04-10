@@ -111,6 +111,19 @@ $element-width: 50%;
       }
     }
   }
+
+  .SessionTimeOut {
+    display: flex;
+    justify-content: center;
+
+    p {
+      text-align: center;
+      width: fit-content;
+      box-shadow: 0 0 7px 2px #ecc09b;
+      background-color: rgb(143, 55, 68);
+      padding: 1rem;
+    }
+  }
 }
 
 @keyframes spin {

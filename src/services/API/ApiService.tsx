@@ -50,6 +50,23 @@ class ApiService {
     }
   }
 
+  public async getTokenFromRefresh(): Promise<ApiServiceResponse<Token>> {
+    try {
+      const refreshToken = localStorage.getItem('refreshToken')
+      if (!refreshToken) {
+        return { data: undefined, responseCode: ApiResponse.UNAUTHORIZED }
+      }
+      const response = await axios.post('/api/token/refresh/')
+      return { data: { access: response.data, refresh: refreshToken }, responseCode: ApiResponse.POSITIVE }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const statusCode = error.response?.status
+        return { data: undefined, responseCode: this.handleError(statusCode) }
+      }
+      return { data: undefined, responseCode: ApiResponse.BAD_RESPONSE }
+    }
+  }
+
   public async getUser(): Promise<ApiServiceResponse<User>> {
     try {
       if (this.isTokenExpired()) {
