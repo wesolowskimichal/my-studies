@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { RepositoryPost } from '../../interfaces'
 import styles from './CoursePosts.module.scss'
-import attachmentIcon from '../../../assets/attachment_icon.svg'
-import hidePostIcon from '../../../assets/hidePost_icon.png'
-import showPostIcon from '../../../assets/showPost_icon.png'
-import DragAndDrop from '../../DragAndDrop/DragAndDrop'
+import attachmentIcon from '../../assets/attachment_icon.svg'
+import hidePostIcon from '../../assets/hidePost_icon.png'
+import showPostIcon from '../../assets/showPost_icon.png'
+import { RepositoryPost } from '../../components/interfaces'
+import DragAndDrop from '../../components/DragAndDrop/DragAndDrop'
 
 interface CoursePostsProps {
   repositoryPosts?: RepositoryPost[]

@@ -1,10 +1,11 @@
 import React, { useState, FormEvent, Dispatch, SetStateAction, useEffect } from 'react'
 import styles from './LogIn.module.scss'
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
-import logo from '../../assets/logo-long.png'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import logo from '../../assets/logo.svg'
 import ApiService from '../../services/API/ApiService'
-import { ApiResponse } from '../../services/API/ApiResponse'
 import TokenManagerServiceWrapper from '../../services/TokenManager/TokenManagerServiceWrapper'
+import { useUser } from '../../services/UserContext/UserContext'
+import { ApiResponse } from '../../services/API/ApiResponse'
 
 function LogIn() {
   const [email, setEmail] = useState('')
@@ -12,6 +13,7 @@ function LogIn() {
   const navigate = useNavigate()
   const { state } = useLocation()
   const { sessionTimeOut } = state ? state : false
+  const setUser = useUser().setUser
 
   useEffect(() => {
     if (!ApiService.getInstance().isTokenExpired()) {
@@ -27,6 +29,13 @@ function LogIn() {
         if (response.responseCode === ApiResponse.POSITIVE) {
           localStorage.setItem('accessToken', response.data!.access)
           localStorage.setItem('refreshToken', response.data!.refresh)
+          const fetchUser = async () => {
+            const userResponse = await ApiService.getInstance().getUser()
+            if (userResponse.responseCode === ApiResponse.POSITIVE) {
+              setUser(userResponse.data)
+            }
+          }
+          fetchUser()
           TokenManagerServiceWrapper.launch().setTokenManagerService()
           navigate('/')
         } else {

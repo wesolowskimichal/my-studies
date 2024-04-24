@@ -1,3 +1,5 @@
+import { useContext } from 'react'
+
 export interface AccountType {
   id: string
   type: string
@@ -12,8 +14,9 @@ export interface User {
   id: string
   first_name: string
   last_name: string
-  user_type: AccountType
+  user_type: string
   picture: string
+  email: string
 }
 
 export interface Repository {

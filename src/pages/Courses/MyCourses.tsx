@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Repository } from '../interfaces'
-
-import Course from '../Course/Course'
 import styles from './Courses.module.scss'
+import { useNavigate } from 'react-router-dom'
+import { Repository } from '../../components/interfaces'
 import ApiService from '../../services/API/ApiService'
 import { ApiResponse } from '../../services/API/ApiResponse'
-import { useNavigate } from 'react-router-dom'
+import Course from '../../views/Course/Course'
 
 function MyCourses() {
   const [courses, setCourses] = useState<Repository[]>([])
@@ -24,8 +23,9 @@ function MyCourses() {
   useEffect(() => {
     const getAllCourses = async () => {
       const response = await ApiService.getInstance().getMyRepositories()
+      console.log(response)
       if (response.responseCode !== ApiResponse.POSITIVE) {
-        console.error(`Error fetching course: ' ${response.responseCode}`)
+        console.error(`Error fetching course: ${response.responseCode}`)
         return
       }
       const repositories = response.data!

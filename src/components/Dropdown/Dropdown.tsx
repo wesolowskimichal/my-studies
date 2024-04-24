@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './Dropdown.module.scss'
 import { Link, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo-guest.png'
+import ContentManagerService from '../../services/ContentManager/ContentManagerService'
 
 export interface MenuItem {
   itemTitle: string
@@ -18,6 +19,12 @@ function Dropdown({ title, menuItems }: DropdownProps) {
   const [isOpen, setOpen] = useState(false)
   const [headerClass, setHeaderClass] = useState('')
 
+  useEffect(() => {
+    if (ContentManagerService.getInstance().getRender() !== 'profile') {
+      ContentManagerService.getInstance().setRender('profile')
+    }
+  }, [])
+
   return (
     <div
       className={styles.Wrapper}
@@ -28,7 +35,9 @@ function Dropdown({ title, menuItems }: DropdownProps) {
     >
       <img
         src={logo}
-        className={`${styles.Header} ${headerClass}`}
+        className={`${styles.Header} ${headerClass} ${
+          ContentManagerService.getInstance().getRender() == 'profile' ? styles.Current : ' '
+        }`}
         onClick={() => setOpen(!isOpen)}
         onMouseEnter={() => {
           setOpen(true)

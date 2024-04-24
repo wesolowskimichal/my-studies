@@ -1,11 +1,11 @@
-import { Repository, RepositoryPost } from '../interfaces'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import Header from '../MainPage/Header/Header'
 import styles from './CourseDetails.module.scss'
-import CoursePosts from './CoursePosts/CoursePosts'
+import CoursePosts from '../../views/CoursePosts/CoursePosts'
 import ApiService from '../../services/API/ApiService'
 import { ApiResponse } from '../../services/API/ApiResponse'
+import { Repository, RepositoryPost } from '../../components/interfaces'
+import Page from '../page/Page'
 
 function CourseDetails() {
   enum ContentType {
@@ -94,8 +94,7 @@ function CourseDetails() {
   }
 
   return (
-    <>
-      <Header />
+    <Page name="My-Studies Kurs">
       <div className={styles.Wrapper}>
         <div className={styles.Header}>
           <img src={`${import.meta.env.VITE_APP_API_URL}${repository?.picture}`} alt="Course Image" />
@@ -114,7 +113,7 @@ function CourseDetails() {
         </div>
         <div className={styles.Content}>{renderContent()}</div>
       </div>
-    </>
+    </Page>
   )
 }
 

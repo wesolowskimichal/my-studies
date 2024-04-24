@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import Header from './Header/Header'
 import styles from './MainPage.module.scss'
-import MyCourses from '../Courses/MyCourses'
-import AllCourses from '../Courses/AllCourses'
 import ContentManagerService from '../../services/ContentManager/ContentManagerService'
+import AllCourses from '../Courses/AllCourses'
+import MyCourses from '../Courses/MyCourses'
+import Page from '../page/Page'
 
 function MainPage() {
   const [currentRender, setCurrentRender] = useState(ContentManagerService.getInstance().getRender())
@@ -26,16 +26,17 @@ function MainPage() {
         return <AllCourses />
       case 'my-courses':
         return <MyCourses />
-      default:
-        return null
+      default: {
+        ContentManagerService.getInstance().setRender('all-courses')
+        return <AllCourses />
+      }
     }
   }
 
   return (
-    <div>
-      <Header />
+    <Page name="My-Studies | Main Page">
       <div className={styles.Wrapper}>{renderComponent()}</div>
-    </div>
+    </Page>
   )
 }
 

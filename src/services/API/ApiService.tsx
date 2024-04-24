@@ -2,6 +2,7 @@ import { Repository, RepositoryPost, Token, User } from '../../components/interf
 import axios, { AxiosRequestConfig } from 'axios'
 import { ApiResponse } from './ApiResponse'
 import { jwtDecode } from 'jwt-decode'
+import { useUser } from '../UserContext/UserContext'
 
 interface ApiServiceResponse<T> {
   data?: T
@@ -32,6 +33,15 @@ class ApiService {
     } catch (error) {
       return true
     }
+  }
+
+  public getUserId(): string | undefined {
+    if (this.isTokenExpired()) {
+      return undefined
+    }
+    const token = localStorage.getItem('accessToken')
+    const decodedToken = jwtDecode(token!)
+    return decodedToken.user_id
   }
 
   public async getToken(username: string, password: string): Promise<ApiServiceResponse<Token>> {
@@ -83,6 +93,19 @@ class ApiService {
     }
   }
 
+  public async getUserById(id: string): Promise<ApiServiceResponse<User>> {
+    try {
+      const response = await axios.get(`/api/user/${id}`)
+      return { data: response.data, responseCode: ApiResponse.POSITIVE }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const statusCode = error.response?.status
+        return { data: undefined, responseCode: this.handleError(statusCode) }
+      }
+      return { data: undefined, responseCode: ApiResponse.BAD_RESPONSE }
+    }
+  }
+
   public async getRepositories(): Promise<ApiServiceResponse<Repository[]>> {
     try {
       const response = await axios.get('/api/repositories/list/')
@@ -97,15 +120,33 @@ class ApiService {
   }
 
   public async getMyRepositories(): Promise<ApiServiceResponse<Repository[]>> {
+    if (this.isTokenExpired()) {
+      return { data: undefined, responseCode: ApiResponse.UNAUTHORIZED }
+    }
+    const getStudentRepositories = async (): Promise<Repository[]> => {
+      try {
+        const response = await axios.get('/api/user/repositories/', this.getConfig())
+        return response.data
+      } catch (error) {
+        throw error
+      }
+    }
+
+    const getTeacherRepositories = async (): Promise<Repository[]> => {
+      try {
+        const response = await axios.get('/api/teacher/repositories/', this.getConfig())
+        return response.data
+      } catch (error) {
+        throw error
+      }
+    }
+
     try {
-      if (this.isTokenExpired()) {
-        return { data: undefined, responseCode: ApiResponse.UNAUTHORIZED }
-      }
-      const response = await axios.get('/api/user/repositories/', this.getConfig())
-      let repositories: Repository[] = []
-      for (let responseElement of response.data) {
-        repositories.push(responseElement.repository)
-      }
+      // console.log(useUser().user)
+      const repositories = await getTeacherRepositories()
+      // useUser().user?.user_type.toLowerCase() == 'student'
+      // ? await getStudentRepositories()
+      // : await getTeacherRepositories()
       return { data: repositories, responseCode: ApiResponse.POSITIVE }
     } catch (error) {
       if (axios.isAxiosError(error)) {

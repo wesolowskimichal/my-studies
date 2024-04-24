@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Repository } from '../interfaces'
-
-import Course from '../Course/Course'
-import styles from './Courses.module.scss'
 import ApiService from '../../services/API/ApiService'
+import { Repository } from '../../components/interfaces'
 import { ApiResponse } from '../../services/API/ApiResponse'
+import styles from './Courses.module.scss'
+import Course from '../../views/Course/Course'
 
 function AllCourses() {
   const [courses, setCourses] = useState<Repository[]>([])

@@ -1,0 +1,68 @@
+@import '../../../utils/variables.scss';
+
+.Wrapper {
+  padding: 2rem;
+  display: flex;
+
+  aside {
+    position: sticky;
+    top: 80px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 7px 4px $decoration-color-light;
+    padding: 1rem;
+    column-gap: 2rem;
+    height: fit-content;
+
+    h2 {
+      text-align: center;
+    }
+
+    img {
+      border-radius: 50%;
+      border: 1px solid cyan;
+      margin-bottom: 1rem;
+    }
+
+    .HeaderInfoWrapper {
+      flex-basis: 100%;
+      border-top: 1px solid $decoration-color-light;
+      padding: 0.4rem;
+      display: flex;
+      flex-direction: column;
+
+      .HeaderInfo {
+        flex-basis: 100%;
+        border: 0;
+
+        p {
+          padding-left: 2rem;
+        }
+
+        &.HeaderInfoOwner {
+          flex-basis: 50%;
+          border-bottom: 1px solid $decoration-color-light;
+        }
+      }
+      .HeaderOptions {
+        flex-basis: 50%;
+        display: flex;
+        justify-content: center;
+        padding: 1rem;
+
+        button {
+          padding: 0.4rem;
+        }
+      }
+    }
+  }
+
+  .Content {
+    margin-left: 2rem;
+    flex-basis: 100%;
+
+    h1 {
+      text-align: center;
+    }
+  }
+}

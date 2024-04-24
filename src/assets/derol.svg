@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <ellipse style="stroke: rgb(255, 0, 0); fill: rgba(216, 216, 216, 0);" cx="250.338" cy="249.707" rx="247.749" ry="247.749" transform="matrix(1, 0, 0, 1, 1.1368683772161603e-13, 5.684341886080802e-14)"/>
+  <path style="fill: rgb(255, 0, 0); stroke: rgb(255, 0, 0);" d="M 126.378 126.93 L 372.513 373.065" transform="matrix(1, 0, 0, 1, 1.1368683772161603e-13, 5.684341886080802e-14)"/>
+  <path style="fill: rgb(255, 0, 0); stroke: rgb(255, 0, 0);" d="M 374.303 126.55 L 127.335 372.548" transform="matrix(1, 0, 0, 1, 1.1368683772161603e-13, 5.684341886080802e-14)"/>
+</svg>

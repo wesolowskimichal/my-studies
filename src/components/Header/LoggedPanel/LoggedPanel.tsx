@@ -1,13 +1,19 @@
 import React, { Dispatch, SetStateAction } from 'react'
-import Dropdown, { MenuItem } from '../../../Dropdown/Dropdown'
 import styles from './LoggedPanel.module.scss'
 import { Link, useNavigate } from 'react-router-dom'
-import ContentManagerService from '../../../../services/ContentManager/ContentManagerService'
+import Dropdown, { MenuItem } from '../../Dropdown/Dropdown'
+import ContentManagerService from '../../../services/ContentManager/ContentManagerService'
+import ApiService from '../../../services/API/ApiService'
 
 function LoggedPanel() {
-  const navigate = useNavigate()
   const menuItems: MenuItem[] = [
-    { itemTitle: 'Profil', itemOnClick: () => console.log('Profil'), redirect: '/' },
+    {
+      itemTitle: 'Profil',
+      itemOnClick: () => {
+        ContentManagerService.getInstance().setRender('profile')
+      },
+      redirect: `/user/${ApiService.getInstance().getUserId()}`
+    },
     { itemTitle: 'Oceny', itemOnClick: () => console.log('Oceny'), redirect: '/' },
     { itemTitle: 'Wiadomości', itemOnClick: () => console.log('Wiadomości'), redirect: '/' },
     {
@@ -21,8 +27,8 @@ function LoggedPanel() {
   ]
 
   return (
-    <>
-      <div>
+    <div className={styles.Wrapper}>
+      <div className={styles.Links}>
         <Link
           to="/"
           className={`${styles.Element} ${
@@ -32,8 +38,6 @@ function LoggedPanel() {
         >
           <span>Kursy</span>
         </Link>
-      </div>
-      <div>
         <Link
           to="/"
           className={`${styles.Element} ${
@@ -44,8 +48,8 @@ function LoggedPanel() {
           <span>Moje Kursy</span>
         </Link>
       </div>
-      <Dropdown title="Profil" menuItems={menuItems}></Dropdown>
-    </>
+      <Dropdown title="Profil" menuItems={menuItems} />
+    </div>
   )
 }
 

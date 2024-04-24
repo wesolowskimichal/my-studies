@@ -14,6 +14,7 @@
     padding: 0.1rem;
 
     &.Hover {
+      height: 32px;
       transition: 0.5s;
       box-shadow: 0 0 15px #94f3e4;
       color: #94f3e4;
@@ -68,6 +69,11 @@
       // Add transition properties to animate opacity and transform
       transition: opacity 0.5s ease, transform 0.5s ease;
 
+      a {
+        color: #eee;
+        text-decoration: none;
+      }
+
       &.Show {
         opacity: 1;
         transform: translateY(0); // End position at original position
@@ -90,4 +96,30 @@
   syntax: '<angle>';
   inherits: true;
   initial-value: 0turn;
+}
+
+.Current {
+  height: 32px !important;
+  --border-angle: 0turn; // For animation.
+  --main-bg: conic-gradient(from var(--border-angle), #333f44, #1a1a1b 5%, #1a1a1b 60%, #333f44 95%);
+
+  border: solid 5px transparent;
+  --gradient-border: conic-gradient(from var(--border-angle), transparent 25%, #37aa9c, #94f3e4 99%, transparent);
+
+  background: 
+      // padding-box clip this background in to the overall element except the border.
+    var(--main-bg) padding-box,
+    // border-box extends this background to the border space
+    var(--gradient-border) border-box,
+    // Duplicate main background to fill in behind the gradient border. You can remove this if you want the border to extend "outside" the box background.
+    var(--main-bg) border-box;
+
+  background-position: center center;
+
+  animation: bg-spin 3s linear infinite;
+  @keyframes bg-spin {
+    to {
+      --border-angle: 1turn;
+    }
+  }
 }

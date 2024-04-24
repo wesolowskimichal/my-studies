@@ -1,9 +1,10 @@
 import { createBrowserRouter } from 'react-router-dom'
-import MainPage from './components/MainPage/MainPage'
-import LogIn from './components/LogIn/LogIn'
-import Register from './components/Register/Register'
-import CourseDetails from './components/CourseDetails/CourseDetails'
 import JWTester from './components/JWTester/JWTester'
+import Register from './pages/Register/Register'
+import LogIn from './pages/LogIn/LogIn'
+import MainPage from './pages/MainPage/MainPage'
+import CourseDetails from './pages/CourseDetails/CourseDetails'
+import Profile from './pages/User/Profile/Profile'
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
   {
     path: '/course/:id',
     element: <CourseDetails />
+  },
+  {
+    path: '/user/:id',
+    element: <Profile />
   },
   {
     path: '/test_jwt',

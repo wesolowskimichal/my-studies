@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react'
 import styles from './DragAndDrop.module.scss'
 import trashIcon from '../../assets/trash_icon.svg'
 
-function DragAndDrop({ onFilesSelected }: void) {
+type DragAndDropProps = {
+  onFilesSelected: (file: File[]) => void
+}
+
+function DragAndDrop({ onFilesSelected }: DragAndDropProps) {
   const [files, setFiles] = useState<File[]>([])
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,8 +48,6 @@ function DragAndDrop({ onFilesSelected }: void) {
                 <span>{file.name}</span>
                 <span>{(file.size / (1024 * 1024)).toFixed(2)} MB</span>
                 <img src={trashIcon} onClick={() => handleRemoveFile(index)} />
-                {/* <button onClick={() => handleRemoveFile(index)}>
-                </button> */}
               </div>
             ))}
           </>

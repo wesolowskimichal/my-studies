@@ -1,12 +1,14 @@
-import styles from './Course.module.scss'
+import basic_styles from './Course.module.scss'
 import { Repository } from '../interfaces'
 import { Link } from 'react-router-dom'
 
 interface CourseProps {
   repository: Repository
+  styles?: CSSModuleClasses
 }
 
-function Course({ repository }: CourseProps) {
+function Course({ repository, styles }: CourseProps) {
+  if (!styles) styles = basic_styles
   const pictureSrc = repository.picture.startsWith('http')
     ? repository.picture
     : `${import.meta.env.VITE_APP_API_URL}${repository.picture}`
