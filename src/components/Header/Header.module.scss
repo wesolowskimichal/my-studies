@@ -3,7 +3,6 @@
 $header-height: 50px;
 
 .Wrapper {
-  width: 100%;
   height: $header-height;
   z-index: 100;
   position: sticky;
@@ -15,9 +14,47 @@ $header-height: 50px;
   display: flex;
   flex-direction: row;
   column-gap: 10%;
+  padding: 1rem;
 
   img {
     max-height: 100%;
+  }
+
+  .ElementWrapper {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+
+    .Element {
+      display: grid;
+      place-content: center;
+      color: white;
+      text-shadow: 0 1px 0 #000;
+      box-shadow: 0 0 15px #94f3e4;
+      border-radius: 2em;
+      flex-basis: 10%;
+      text-decoration: none;
+      padding: 4px;
+
+      &::before {
+        border-radius: 50%;
+        background: #94f3e4;
+        transition: 0.5s;
+        transform: scale(0.9);
+      }
+
+      &:hover::before {
+        transform: scale(1.1);
+        box-shadow: 0 0 15px #94f3e4;
+      }
+
+      &:hover {
+        color: #94f3e4;
+        box-shadow: 0 0 5px #94f3e4;
+        text-shadow: 0 0 5px #94f3e4;
+        transition-duration: 0.6s;
+      }
+    }
   }
 
   .Current {

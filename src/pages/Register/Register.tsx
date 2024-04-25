@@ -1,21 +1,54 @@
-import React, { useState, FormEvent } from 'react'
+import React, { useState, FormEvent, useEffect } from 'react'
 import styles from './Register.module.scss'
 import { Link, useNavigate } from 'react-router-dom'
-import logo from '../../assets/logo-long.png'
+import logo from '/logo.svg'
+import ApiService from '../../services/API/ApiService'
+import { ApiResponse } from '../../services/API/ApiResponse'
+import TokenManagerServiceWrapper from '../../services/TokenManager/TokenManagerServiceWrapper'
+import { context } from '../../services/UserContext/UserContext'
 
 function Register() {
   const [email, setEmail] = useState('')
+  const [userName, setUserName] = useState('')
   const [name, setName] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
+  const { setUser } = context()
 
-  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    if (!ApiService.getInstance().isTokenExpired()) {
+      navigate('/')
+    }
+  }, [])
+
+  const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const [fname, sname] = name.trim().split(' ')
     console.log(fname + ' ' + sname)
     if (fname === undefined || sname === undefined) {
-      console.log('ERROR')
+      // throw error
+      return
     }
+    const response = await ApiService.getInstance()
+      .getTokenRegister(userName, email, fname, sname, password)
+      .then(response => {
+        if (response.responseCode === ApiResponse.POSITIVE) {
+          localStorage.setItem('accessToken', response.data!.access)
+          localStorage.setItem('refreshToken', response.data!.refresh)
+          const fetchUser = async () => {
+            const userResponse = await ApiService.getInstance().getUser()
+            if (userResponse.responseCode === ApiResponse.POSITIVE) {
+              setUser(userResponse.data)
+              localStorage.setItem('user-data', JSON.stringify(userResponse.data))
+            }
+          }
+          fetchUser()
+          TokenManagerServiceWrapper.launch().setTokenManagerService()
+          navigate('/')
+        } else {
+          console.log('error while obtaining token')
+        }
+      })
   }
 
   return (
@@ -35,7 +68,7 @@ function Register() {
             </Link>
             <button className={`${styles.defaultButton} ${styles.selectedButton}`}>Register</button>
           </div>
-          <form onSubmit={handleLogin} key="login-page-form">
+          <form onSubmit={handleRegister} key="login-page-form">
             <input
               type="email"
               name="email-input"
@@ -43,6 +76,14 @@ function Register() {
               placeholder="Email Address"
               value={email}
               onChange={e => setEmail(e.target.value)}
+            />
+            <input
+              type="text"
+              name="usernamename-input"
+              id="username-input"
+              placeholder="Username"
+              value={userName}
+              onChange={e => setUserName(e.target.value)}
             />
             <input
               type="text"

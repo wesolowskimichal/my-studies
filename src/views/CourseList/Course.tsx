@@ -1,34 +1,35 @@
-import { Repository } from '../../../interfaces'
+import { RepositoryEnrolment } from '../../components/interfaces'
 import styles from './Course.module.scss'
 import { Link } from 'react-router-dom'
 
 interface CourseProps {
-  repository: Repository
+  repositoryEnrolment: RepositoryEnrolment
 }
 
-function Course({ repository }: CourseProps) {
-  const pictureSrc = repository.picture.startsWith('http')
-    ? repository.picture
-    : `${import.meta.env.VITE_APP_API_URL}${repository.picture}`
+function Course({ repositoryEnrolment }: CourseProps) {
+  const pictureSrc = repositoryEnrolment.repository.picture.startsWith('http')
+    ? repositoryEnrolment.repository.picture
+    : `${import.meta.env.VITE_APP_API_URL}${repositoryEnrolment.repository.picture}`
+  console.log(repositoryEnrolment)
   return (
-    <div className={styles.Wrapper}>
-      <img src={pictureSrc} alt="Course Image" />
-      <h2>{repository.name}</h2>
-      <p>
+    <>
+      <img src={pictureSrc} alt="Course Image" className={styles.Img} />
+      <h2 className={styles.Header}>{repositoryEnrolment.repository.name}</h2>
+      <p className={styles.P}>
         <span>
           <b>Prowadzący: </b>
-          {repository.owners.map((user, index) => (
+          {repositoryEnrolment.repository.owners.map((user, index) => (
             <span key={index}>{`${user.first_name} ${user.last_name}${
-              index < repository.owners.length - 1 ? ', ' : ''
+              index < repositoryEnrolment.repository.owners.length - 1 ? ', ' : ''
             }`}</span>
           ))}
         </span>
       </p>
-      <div>
+      <div className={styles.Buttons}>
         <button className={styles.Remove}></button>
         <button>przejdz</button>
       </div>
-    </div>
+    </>
   )
 }
 

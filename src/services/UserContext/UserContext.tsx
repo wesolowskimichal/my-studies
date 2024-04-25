@@ -1,13 +1,15 @@
 import React, { createContext, useContext, useState } from 'react'
 import { User } from '../../components/interfaces'
-import ApiService from '../API/ApiService'
 
 interface UserContextType {
-  user: User | undefined
-  setUser: React.Dispatch<React.SetStateAction<User | undefined>>
+  user: User | null
+  setUser: React.Dispatch<React.SetStateAction<User | null>>
 }
 
-const UserContext = createContext<UserContextType | undefined>(undefined)
+const UserContext = createContext<UserContextType>({
+  user: null,
+  setUser: () => {}
+})
 
 export const useUser = () => {
   const context = useContext(UserContext)
@@ -17,23 +19,17 @@ export const useUser = () => {
   return context
 }
 
-const UserContextProvider: React.FC = ({ children }: any) => {
-  const [user, setUser] = useState<User | undefined>()
+type UserProviderProps = {
+  children: React.ReactNode
+}
 
-  const fetchUser = async (): Promise<void> => {
-    try {
-      const userData = await ApiService.getInstance().getUser()
-      setUser(userData.data!)
-    } catch (error) {
-      console.error('Error fetching user:', error)
-    }
-  }
-
-  React.useEffect(() => {
-    fetchUser()
-  }, []) // Fetch user on component mount
-
+const UserContextProvider = ({ children }: UserProviderProps) => {
+  const userLocalJson = localStorage.getItem('user-data')
+  const userLocal: User | null = userLocalJson ? JSON.parse(userLocalJson) : null
+  const [user, setUser] = useState<User | null>(userLocal)
   return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>
 }
+
+export const context = () => useContext(UserContext)
 
 export default UserContextProvider

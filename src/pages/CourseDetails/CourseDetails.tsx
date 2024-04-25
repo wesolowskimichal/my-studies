@@ -24,6 +24,7 @@ function CourseDetails() {
   useEffect(() => {
     const getPosts = async () => {
       const response = await ApiService.getInstance().getRepositoryPosts(id!)
+      console.log(response)
       if (response.responseCode !== ApiResponse.POSITIVE) {
         console.error(`Error fetching course: ' ${response.responseCode}`)
         if (response.responseCode === ApiResponse.FORBIDDEN) {
@@ -84,7 +85,7 @@ function CourseDetails() {
               <b>Nie został Ci przyznany dostęp do kursy</b>
             </span>
             <div>
-              <Link to="/login">Wyślij prośbę o dołączenie</Link>
+              <a onClick={() => ApiService.getInstance().sendEnrollmentRequest(id!)}>Wyślij prośbę o dołączenie</a>
             </div>
           </div>
         )

@@ -1,11 +1,10 @@
-import { Repository, RepositoryPost, Token, User } from '../../components/interfaces'
-import axios, { AxiosRequestConfig } from 'axios'
+import { Repository, RepositoryEnrolment, RepositoryPost, Token, User } from '../../components/interfaces'
+import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 import { ApiResponse } from './ApiResponse'
 import { jwtDecode } from 'jwt-decode'
-import { useUser } from '../UserContext/UserContext'
 
 interface ApiServiceResponse<T> {
-  data?: T
+  data: T | null
   responseCode: ApiResponse
 }
 
@@ -44,151 +43,164 @@ class ApiService {
     return decodedToken.user_id
   }
 
-  public async getToken(username: string, password: string): Promise<ApiServiceResponse<Token>> {
+  private async apiRequest<T>(request: () => Promise<T>): Promise<ApiServiceResponse<T>> {
     try {
+      const data = await request()
+      return { data: data, responseCode: ApiResponse.POSITIVE }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const statusCode = (error as AxiosError).response?.status
+        return { data: null, responseCode: this.convertCodeToResponseCode(statusCode) }
+      }
+      return { data: null, responseCode: ApiResponse.BAD_RESPONSE }
+    }
+  }
+
+  public async getToken(username: string, password: string): Promise<ApiServiceResponse<Token>> {
+    const fetchToken = async () => {
       const response = await axios.post('/api/token/', {
         username: username,
         password: password
       })
-      return { data: response.data, responseCode: ApiResponse.POSITIVE }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const statusCode = error.response?.status
-        return { data: undefined, responseCode: this.handleError(statusCode) }
-      }
-      return { data: undefined, responseCode: ApiResponse.BAD_RESPONSE }
+      return response.data
     }
+
+    return this.apiRequest(fetchToken)
+  }
+
+  public sendEnrollmentRequest = (id: string): Promise<ApiServiceResponse<any>> => {
+    const postEnrollment = async () => {
+      const bodyParameters = {}
+      const response = await axios.post(`/api/repository/${id}/`, bodyParameters, this.getConfig())
+      return response.data
+    }
+
+    return this.apiRequest(postEnrollment)
+  }
+
+  public async getTokenRegister(
+    username: string,
+    email: string,
+    first_name: string,
+    last_name: string,
+    password: string
+  ): Promise<ApiServiceResponse<Token>> {
+    const fetchToken = async (): Promise<Token> => {
+      const response = await axios.post('/api/register/', {
+        username: username,
+        email: email,
+        first_name: first_name,
+        last_name: last_name,
+        password: password
+      })
+      return response.data
+    }
+
+    const registerResponse = await this.apiRequest(fetchToken)
+    if (registerResponse.responseCode === ApiResponse.POSITIVE) {
+      return this.getToken(username, password)
+    }
+
+    return registerResponse
   }
 
   public async getTokenFromRefresh(): Promise<ApiServiceResponse<Token>> {
-    try {
+    const refreshToken = async () => {
       const refreshToken = localStorage.getItem('refreshToken')
       if (!refreshToken) {
-        return { data: undefined, responseCode: ApiResponse.UNAUTHORIZED }
+        return { data: null, responseCode: ApiResponse.UNAUTHORIZED }
       }
       const response = await axios.post('/api/token/refresh/')
-      return { data: { access: response.data, refresh: refreshToken }, responseCode: ApiResponse.POSITIVE }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const statusCode = error.response?.status
-        return { data: undefined, responseCode: this.handleError(statusCode) }
-      }
-      return { data: undefined, responseCode: ApiResponse.BAD_RESPONSE }
+      return response.data
     }
+    return this.apiRequest(refreshToken)
   }
 
   public async getUser(): Promise<ApiServiceResponse<User>> {
-    try {
-      if (this.isTokenExpired()) {
-        return { data: undefined, responseCode: ApiResponse.UNAUTHORIZED }
-      }
+    const fetchUser = async () => {
       const response = await axios.get('/api/user/', this.getConfig())
-      return { data: response.data, responseCode: ApiResponse.POSITIVE }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const statusCode = error.response?.status
-        return { data: undefined, responseCode: this.handleError(statusCode) }
-      }
-      return { data: undefined, responseCode: ApiResponse.BAD_RESPONSE }
+      return response.data
     }
+
+    return this.apiRequest(fetchUser)
   }
 
   public async getUserById(id: string): Promise<ApiServiceResponse<User>> {
-    try {
+    const fetchUser = async () => {
       const response = await axios.get(`/api/user/${id}`)
-      return { data: response.data, responseCode: ApiResponse.POSITIVE }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const statusCode = error.response?.status
-        return { data: undefined, responseCode: this.handleError(statusCode) }
-      }
-      return { data: undefined, responseCode: ApiResponse.BAD_RESPONSE }
+      return response.data
     }
+
+    return this.apiRequest(fetchUser)
   }
 
   public async getRepositories(): Promise<ApiServiceResponse<Repository[]>> {
-    try {
+    const fetchRepositories = async () => {
       const response = await axios.get('/api/repositories/list/')
-      return { data: response.data, responseCode: ApiResponse.POSITIVE }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const statusCode = error.response?.status
-        return { data: undefined, responseCode: this.handleError(statusCode) }
-      }
-      return { data: undefined, responseCode: ApiResponse.BAD_RESPONSE }
+      return response.data
     }
+
+    return this.apiRequest(fetchRepositories)
   }
 
-  public async getMyRepositories(): Promise<ApiServiceResponse<Repository[]>> {
-    if (this.isTokenExpired()) {
-      return { data: undefined, responseCode: ApiResponse.UNAUTHORIZED }
+  public async getStudentRepositories(): Promise<ApiServiceResponse<RepositoryEnrolment[]>> {
+    const fetchStudentRepositories = async (): Promise<RepositoryEnrolment[]> => {
+      const response = await axios.get('/api/user/repositories/', this.getConfig())
+      return response.data
     }
-    const getStudentRepositories = async (): Promise<Repository[]> => {
-      try {
-        const response = await axios.get('/api/user/repositories/', this.getConfig())
-        return response.data
-      } catch (error) {
-        throw error
+    return this.apiRequest(fetchStudentRepositories)
+  }
+
+  public async getTeacherRepositories(): Promise<ApiServiceResponse<Repository[]>> {
+    const fetchTeacherRepositories = async (): Promise<Repository[]> => {
+      const response = await axios.get('/api/teacher/repositories/', this.getConfig())
+      return response.data
+    }
+    return this.apiRequest(fetchTeacherRepositories)
+  }
+
+  public async getMyRepositories(userType: User['user_type']): Promise<ApiServiceResponse<Repository[]>> {
+    const fetchStudentRepositories = async (): Promise<RepositoryEnrolment[]> => {
+      const response = await axios.get('/api/user/repositories/', this.getConfig())
+      return response.data
+    }
+
+    const fetchTeacherRepositories = async (): Promise<Repository[]> => {
+      const response = await axios.get('/api/teacher/repositories/', this.getConfig())
+      return response.data
+    }
+
+    if (userType === 'Student') {
+      const repositoryEnrolmentsResponse = await this.apiRequest(fetchStudentRepositories)
+      if (repositoryEnrolmentsResponse.responseCode === ApiResponse.POSITIVE) {
+        const repositories =
+          repositoryEnrolmentsResponse.data &&
+          repositoryEnrolmentsResponse.data
+            .filter(repositoryEnrolment => repositoryEnrolment.status)
+            .map(repositoryEnrolment => repositoryEnrolment.repository)
+        return { data: repositories, responseCode: ApiResponse.POSITIVE }
       }
     }
 
-    const getTeacherRepositories = async (): Promise<Repository[]> => {
-      try {
-        const response = await axios.get('/api/teacher/repositories/', this.getConfig())
-        return response.data
-      } catch (error) {
-        throw error
-      }
-    }
-
-    try {
-      // console.log(useUser().user)
-      const repositories = await getTeacherRepositories()
-      // useUser().user?.user_type.toLowerCase() == 'student'
-      // ? await getStudentRepositories()
-      // : await getTeacherRepositories()
-      return { data: repositories, responseCode: ApiResponse.POSITIVE }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const statusCode = error.response?.status
-        return { data: undefined, responseCode: this.handleError(statusCode) }
-      }
-      return { data: undefined, responseCode: ApiResponse.BAD_RESPONSE }
-    }
+    return this.apiRequest(fetchTeacherRepositories)
   }
 
   public async getRepository(id: string): Promise<ApiServiceResponse<Repository>> {
-    try {
+    const fetchRepository = async () => {
       const response = await axios.get(`/api/repository/${id}/`)
-      return { data: response.data, responseCode: ApiResponse.POSITIVE }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const statusCode = error.response?.status
-        return { data: undefined, responseCode: this.handleError(statusCode) }
-      }
-      return { data: undefined, responseCode: ApiResponse.BAD_RESPONSE }
+      return response.data
     }
+
+    return this.apiRequest(fetchRepository)
   }
 
   public async getRepositoryPosts(repositoryId: string): Promise<ApiServiceResponse<RepositoryPost[]>> {
-    try {
-      if (this.isTokenExpired()) {
-        return { data: undefined, responseCode: ApiResponse.UNAUTHORIZED }
-      }
+    const fetchRepositoryPosts = async () => {
       const response = await axios.get(`/api/repository/${repositoryId}/posts/`, this.getConfig())
-      return { data: response.data, responseCode: ApiResponse.POSITIVE }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log(error.message)
-        const statusCode = error.response?.status
-        // to do: when user has is not enrolled should return 403 not 401
-        if (error.message === 'Incorrect authentication credentials.') {
-          return { data: undefined, responseCode: ApiResponse.FORBIDDEN }
-        }
-        return { data: undefined, responseCode: this.handleError(statusCode) }
-      }
-      return { data: undefined, responseCode: ApiResponse.BAD_RESPONSE }
+      return response.data
     }
+
+    return this.apiRequest(fetchRepositoryPosts)
   }
 
   private getConfig(): AxiosRequestConfig<any> | undefined {
@@ -197,11 +209,13 @@ class ApiService {
       return undefined
     }
     return {
-      headers: { Authorization: `Bearer ${accessToken}` }
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
     }
   }
 
-  private handleError(statusCode: Number | undefined): ApiResponse {
+  private convertCodeToResponseCode(statusCode: Number | undefined): ApiResponse {
     switch (statusCode) {
       case 400:
         return ApiResponse.BAD_RESPONSE

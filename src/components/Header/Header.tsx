@@ -1,5 +1,5 @@
 import styles from './Header.module.scss'
-import logo from '../../assets/logo.png'
+import logo from '/logo.svg'
 import LoggedPanel from './LoggedPanel/LoggedPanel'
 import { Link } from 'react-router-dom'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
@@ -20,8 +20,8 @@ function Header() {
       {isLogged ? (
         <LoggedPanel />
       ) : (
-        <div>
-          <Link to="/login" className={styles.Element} onClick={() => {}}>
+        <div className={styles.ElementWrapper}>
+          <Link to="/login" className={`${styles.Element} ${styles.Current}`} onClick={() => {}}>
             <span>Zaloguj się</span>
           </Link>
         </div>

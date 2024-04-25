@@ -1,5 +1,6 @@
+import { useEffect } from 'react'
+import { Repository } from '../../components/interfaces'
 import basic_styles from './Course.module.scss'
-import { Repository } from '../interfaces'
 import { Link } from 'react-router-dom'
 
 interface CourseProps {
@@ -8,16 +9,17 @@ interface CourseProps {
 }
 
 function Course({ repository, styles }: CourseProps) {
-  if (!styles) styles = basic_styles
-  const pictureSrc = repository.picture.startsWith('http')
-    ? repository.picture
-    : `${import.meta.env.VITE_APP_API_URL}${repository.picture}`
+  const pictureSrc =
+    repository.picture && repository.picture.startsWith('http')
+      ? repository.picture
+      : `${import.meta.env.VITE_APP_API_URL}${repository.picture}`
+
   return (
     <Link
       to={{
         pathname: `/course/${repository.id}`
       }}
-      className={styles.Wrapper}
+      className={styles?.Wrapper || basic_styles.Wrapper}
     >
       <img src={pictureSrc} alt="Course Image" />
       <h2>{repository.name}</h2>

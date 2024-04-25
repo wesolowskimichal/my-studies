@@ -2,10 +2,10 @@
 
 .Wrapper {
   flex-grow: 1;
-  height: 42px;
   justify-content: space-between;
   box-shadow: none;
   border: none;
+  padding: 0;
 
   .Links {
     flex-basis: 40%;

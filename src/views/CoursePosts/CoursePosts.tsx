@@ -42,7 +42,7 @@ function CoursePosts({ repositoryPosts, setRepositoryPosts }: CoursePostsProps) 
     return ''
   }
 
-  return (
+  return repositoryPosts && repositoryPosts.length > 0 ? (
     <div className={styles.Wrapper}>
       <div className={styles.SideBar}>
         <h3>Tematy:</h3>
@@ -90,6 +90,8 @@ function CoursePosts({ repositoryPosts, setRepositoryPosts }: CoursePostsProps) 
         ))}
       </div>
     </div>
+  ) : (
+    <h1>Brak postów</h1>
   )
 }
 

@@ -1,5 +1,9 @@
 @import '../../utils/variables.scss';
 
+h1 {
+  text-align: center;
+}
+
 .Wrapper {
   display: grid;
   grid-template-columns: 2fr 11fr;

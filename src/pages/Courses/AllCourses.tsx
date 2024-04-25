@@ -14,6 +14,7 @@ function AllCourses() {
   useEffect(() => {
     const getAllCourses = async () => {
       const response = await ApiService.getInstance().getRepositories()
+      console.log(response)
       if (response.responseCode !== ApiResponse.POSITIVE) {
         console.error(`Error fetching course: ' ${response.responseCode}`)
         return

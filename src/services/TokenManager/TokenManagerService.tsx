@@ -38,7 +38,7 @@ class TokenManagerService {
     const closeAlert = () => {
       localStorage.removeItem('accessToken')
       localStorage.removeItem('refreshToken')
-      localStorage.removeItem('userType')
+      localStorage.removeItem('user-data')
       document.body.removeChild(customAlert)
     }
 

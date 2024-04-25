@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './CourseList.module.scss'
 import Course from './Course'
-import { Repository } from '../../components/interfaces'
+import { Repository, RepositoryEnrolment } from '../../components/interfaces'
 import ApiService from '../../services/API/ApiService'
 import { ApiResponse } from '../../services/API/ApiResponse'
 
 function CourseList() {
-  const [courses, setCourses] = useState<Repository[]>([])
-  const [visibleCourses, setVisibleCourses] = useState<Repository[]>([])
+  const [courses, setCourses] = useState<RepositoryEnrolment[] | null>([])
+  const [visibleCourses, setVisibleCourses] = useState<RepositoryEnrolment[] | null>([])
   const [search, setSearch] = useState('')
   const [loaded, setLoaded] = useState(false)
 
@@ -39,8 +39,10 @@ function CourseList() {
     if (search.length === 0) {
       setVisibleCourses(courses)
     } else {
-      const filteredCourses = courses.filter(course => course.name.toLowerCase().includes(search.toLowerCase()))
-      setVisibleCourses(filteredCourses)
+      const filteredCourses = courses?.filter(course =>
+        course.repository.name.toLowerCase().includes(search.toLowerCase())
+      )
+      setVisibleCourses(filteredCourses ?? null)
     }
   }, [search, courses])
 
@@ -58,17 +60,15 @@ function CourseList() {
               onChange={e => setSearch(e.target.value)}
             />
           </div>
-          <div className={styles.Courses}>
-            {courses.length > 0 ? (
-              visibleCourses.map((course, index) => (
-                <div key={index}>
-                  <Course repository={course} />
-                </div>
-              ))
-            ) : (
-              <div> Nie masz żadnych kursów</div>
-            )}
-          </div>
+          {courses && courses.length > 0 ? (
+            visibleCourses?.map((course, index) => (
+              <div key={index} className={styles.CourseWrapper}>
+                <Course repositoryEnrolment={course} />
+              </div>
+            ))
+          ) : (
+            <div> Nie masz żadnych kursów</div>
+          )}
         </>
       ) : (
         <div className="loader" style={{ gridColumn: '2 / 3' }}></div>

@@ -1,11 +1,11 @@
 import React, { useState, FormEvent, Dispatch, SetStateAction, useEffect } from 'react'
 import styles from './LogIn.module.scss'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import logo from '../../assets/logo.svg'
+import { Link, json, useLocation, useNavigate } from 'react-router-dom'
+import logo from '/logo.svg'
 import ApiService from '../../services/API/ApiService'
 import TokenManagerServiceWrapper from '../../services/TokenManager/TokenManagerServiceWrapper'
-import { useUser } from '../../services/UserContext/UserContext'
 import { ApiResponse } from '../../services/API/ApiResponse'
+import { context } from '../../services/UserContext/UserContext'
 
 function LogIn() {
   const [email, setEmail] = useState('')
@@ -13,7 +13,7 @@ function LogIn() {
   const navigate = useNavigate()
   const { state } = useLocation()
   const { sessionTimeOut } = state ? state : false
-  const setUser = useUser().setUser
+  const { setUser } = context()
 
   useEffect(() => {
     if (!ApiService.getInstance().isTokenExpired()) {
@@ -33,6 +33,7 @@ function LogIn() {
             const userResponse = await ApiService.getInstance().getUser()
             if (userResponse.responseCode === ApiResponse.POSITIVE) {
               setUser(userResponse.data)
+              localStorage.setItem('user-data', JSON.stringify(userResponse.data))
             }
           }
           fetchUser()
