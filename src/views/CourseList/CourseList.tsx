@@ -5,12 +5,14 @@ import Course from './Course'
 import { Repository, RepositoryEnrolment } from '../../components/interfaces'
 import ApiService from '../../services/API/ApiService'
 import { ApiResponse } from '../../services/API/ApiResponse'
+import { context } from '../../services/UserContext/UserContext'
 
 function CourseList() {
-  const [courses, setCourses] = useState<RepositoryEnrolment[] | null>([])
-  const [visibleCourses, setVisibleCourses] = useState<RepositoryEnrolment[] | null>([])
+  const [courses, setCourses] = useState<Repository[] | null>(null)
+  const [visibleCourses, setVisibleCourses] = useState<Repository[] | null>(null)
   const [search, setSearch] = useState('')
   const [loaded, setLoaded] = useState(false)
+  const { user } = context()
 
   const navigate = useNavigate()
 
@@ -22,7 +24,7 @@ function CourseList() {
 
   useEffect(() => {
     const getAllCourses = async () => {
-      const response = await ApiService.getInstance().getMyRepositories()
+      const response = await ApiService.getInstance().getMyRepositories(user!.user_type)
       if (response.responseCode !== ApiResponse.POSITIVE) {
         console.error(`Error fetching course: ' ${response.responseCode}`)
         return
@@ -40,7 +42,7 @@ function CourseList() {
       setVisibleCourses(courses)
     } else {
       const filteredCourses = courses?.filter(course =>
-        course.repository.name.toLowerCase().includes(search.toLowerCase())
+        course.name.toLowerCase().includes(search.toLowerCase())
       )
       setVisibleCourses(filteredCourses ?? null)
     }
@@ -63,7 +65,7 @@ function CourseList() {
           {courses && courses.length > 0 ? (
             visibleCourses?.map((course, index) => (
               <div key={index} className={styles.CourseWrapper}>
-                <Course repositoryEnrolment={course} />
+                <Course repository={course} />
               </div>
             ))
           ) : (

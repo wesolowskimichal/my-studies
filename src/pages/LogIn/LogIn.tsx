@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, Dispatch, SetStateAction, useEffect } from 'react'
+import React, { useState, FormEvent, useEffect } from 'react'
 import styles from './LogIn.module.scss'
 import { Link, json, useLocation, useNavigate } from 'react-router-dom'
 import logo from '/logo.svg'
@@ -6,6 +6,7 @@ import ApiService from '../../services/API/ApiService'
 import TokenManagerServiceWrapper from '../../services/TokenManager/TokenManagerServiceWrapper'
 import { ApiResponse } from '../../services/API/ApiResponse'
 import { context } from '../../services/UserContext/UserContext'
+import { useTitle } from '../../hooks/useTitle'
 
 function LogIn() {
   const [email, setEmail] = useState('')
@@ -13,7 +14,9 @@ function LogIn() {
   const navigate = useNavigate()
   const { state } = useLocation()
   const { sessionTimeOut } = state ? state : false
-  const { setUser } = context()
+  const { setUser, title } = context()
+
+  useTitle(`${title} | Login`)
 
   useEffect(() => {
     if (!ApiService.getInstance().isTokenExpired()) {

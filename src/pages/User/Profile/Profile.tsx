@@ -17,7 +17,7 @@ function Profile() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      console.log('not owner')
+      console.log('fetching')
       const response = await ApiService.getInstance().getUserById(id!)
       if (response.responseCode !== ApiResponse.POSITIVE) {
         console.error(`Error fetching profile: ${response.responseCode}`)
@@ -31,11 +31,14 @@ function Profile() {
       return
     }
 
+    console.log(user)
+    setIsOwner(user && id === user.id)
+
     isOwner ? setOUser(user) : fetchUser()
-  }, [])
+  }, [user])
 
   return (
-    <Page name="My-Studies | Profil">
+    <Page name="Profile">
       <div className={styles.Wrapper}>
         {oUser !== null ? (
           <>

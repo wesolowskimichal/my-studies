@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 259.576 258.508" xmlns="http://www.w3.org/2000/svg">
+  <g transform="matrix(1, 0, 0, 1, -0.9090909497304835, 0.5445482215963011)">
+    <svg viewBox="0 0 396 130" data-background-color="#ffffff" preserveAspectRatio="xMidYMid meet" height="492" width="1500" xmlns="http://www.w3.org/2000/svg">
+      <g id="tight-bounds" transform="matrix(1,0,0,1,0.2400000000000091,-0.14388467080539158)">
+        <svg viewBox="0 0 395.52 130.28776934161078" height="130.28776934161078" width="395.52">
+          <g>
+            <svg viewBox="0 0 395.52 130.28776934161078" height="130.28776934161078" width="395.52">
+              <g transform="matrix(1,0,0,1,0,80.52306833919116)">
+                <svg viewBox="0 0 395.52 49.764701002419635" height="49.764701002419635" width="395.52">
+                  <g id="textblocktransform">
+                    <svg viewBox="0 0 395.52 49.764701002419635" height="49.764701002419635" width="395.52" id="textblock">
+                      <g>
+                        <svg viewBox="0 0 395.52 49.764701002419635" height="49.764701002419635" width="395.52">
+                          <g transform="matrix(1,0,0,1,0,0)">
+                            <svg width="395.52" viewBox="5.75 -35.7 289.28 36.400000000000006" height="49.764701002419635" data-palette-color="#94f3e4"/>
+                          </g>
+                        </svg>
+                      </g>
+                    </svg>
+                  </g>
+                </svg>
+              </g>
+              <g transform="matrix(1, 0, 0, 1, -8.170117, -0.264228)">
+                <svg viewBox="0 0 84.20642986976259 68.77481678534394" height="68.77481678534394" width="84.20642986976259">
+                  <g>
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="8" y="0" viewBox="9 8.7 72 72.6" enable-background="new 0 0 90 90" height="68.77481678534394" width="68.20642986976259" class="icon-icon-0" data-fill-palette-color="accent" id="icon-0">
+                      <polygon points="71,48.7 71,18.2 54.8,9 38.7,9 63,22.8 63,36.7 63,53.3 " fill="#37aa9c" data-fill-palette-color="accent"/>
+                      <polygon points="29,66 54.8,81 54.7,81 55.1,81.3 71.7,71.7 79.7,57.8 55.3,72 29,56.8 " fill="#37aa9c" data-fill-palette-color="accent"/>
+                      <polygon points="61.2,57 61.3,57 46.9,65.2 54.8,69.8 81,54.5 81,35.2 73,21.3 73,49.8 " fill="#37aa9c" data-fill-palette-color="accent"/>
+                      <polygon points="61,23.9 34.8,8.7 18.2,18.3 10.2,32.3 35,18 47,25 46.8,25 61,33.2 " fill="#37aa9c" data-fill-palette-color="accent"/>
+                      <polygon points="35.2,20.3 9,35.6 9,54.8 17,68.7 17,40.2 28.8,33.2 28.8,33.2 43.2,24.9 " fill="#37aa9c" data-fill-palette-color="accent"/>
+                      <polygon points="19,41.3 19,71.8 35.2,81 51.4,81 27,67.2 27,53.3 27,36.7 " fill="#37aa9c" data-fill-palette-color="accent"/>
+                    </svg>
+                  </g>
+                </svg>
+              </g>
+              <g/>
+            </svg>
+          </g>
+          <defs/>
+        </svg>
+      </g>
+    </svg>
+  </g>
+</svg>

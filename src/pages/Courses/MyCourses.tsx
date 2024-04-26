@@ -6,6 +6,7 @@ import ApiService from '../../services/API/ApiService'
 import { ApiResponse } from '../../services/API/ApiResponse'
 import Course from '../../views/Course/Course'
 import { context } from '../../services/UserContext/UserContext'
+import { useTitle } from '../../hooks/useTitle'
 
 function MyCourses() {
   const [courses, setCourses] = useState<Repository[] | null>(null)
@@ -13,8 +14,8 @@ function MyCourses() {
   const [search, setSearch] = useState('')
   const [loaded, setLoaded] = useState(false)
 
-  const { user } = context()
-  console.log(user)
+  const { user, title } = context()
+  useTitle(`${title} | My courses`)
 
   const navigate = useNavigate()
 

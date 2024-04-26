@@ -3,7 +3,7 @@ import styles from './DragAndDrop.module.scss'
 import trashIcon from '../../assets/trash_icon.svg'
 
 type DragAndDropProps = {
-  onFilesSelected: (file: File[]) => void
+  onFilesSelected: (file: File) => void
 }
 
 function DragAndDrop({ onFilesSelected }: DragAndDropProps) {
@@ -30,7 +30,7 @@ function DragAndDrop({ onFilesSelected }: DragAndDropProps) {
   }
 
   useEffect(() => {
-    onFilesSelected(files)
+    onFilesSelected(files[0])
   }, [files, onFilesSelected])
 
   return (

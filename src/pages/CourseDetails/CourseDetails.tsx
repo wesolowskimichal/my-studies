@@ -16,7 +16,7 @@ function CourseDetails() {
   }
 
   const [repository, setRepository] = useState<Repository>()
-  const [repositoryPosts, setRepositoryPosts] = useState<RepositoryPost[]>()
+  const [repositoryPosts, setRepositoryPosts] = useState<RepositoryPost[]>([])
   const [contentType, setContentType] = useState<ContentType>(ContentType.Loading)
 
   const { id } = useParams<{ id: string }>()
@@ -24,7 +24,6 @@ function CourseDetails() {
   useEffect(() => {
     const getPosts = async () => {
       const response = await ApiService.getInstance().getRepositoryPosts(id!)
-      console.log(response)
       if (response.responseCode !== ApiResponse.POSITIVE) {
         console.error(`Error fetching course: ' ${response.responseCode}`)
         if (response.responseCode === ApiResponse.FORBIDDEN) {
@@ -77,7 +76,11 @@ function CourseDetails() {
           </div>
         )
       case ContentType.Authorized:
-        return <CoursePosts repositoryPosts={repositoryPosts} setRepositoryPosts={setRepositoryPosts} />
+        return (
+          repositoryPosts && (
+            <CoursePosts repositoryId={id!} repositoryPosts={repositoryPosts} setRepositoryPosts={setRepositoryPosts} />
+          )
+        )
       case ContentType.Logged:
         return (
           <div className={styles.NotAuthorized}>

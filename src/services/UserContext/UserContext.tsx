@@ -1,33 +1,39 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import { User } from '../../components/interfaces'
 
-interface UserContextType {
+interface ContextType {
   user: User | null
   setUser: React.Dispatch<React.SetStateAction<User | null>>
+  title: string
+  setTitle: React.Dispatch<React.SetStateAction<string>>
 }
 
-const UserContext = createContext<UserContextType>({
-  user: null,
-  setUser: () => {}
+const initUser = (): User | null => {
+  const userLocalJson = localStorage.getItem('user-data')
+  const userLocal: User | null = userLocalJson ? JSON.parse(userLocalJson) : null
+  return userLocal
+}
+
+const UserContext = createContext<ContextType>({
+  user: initUser(),
+  setUser: () => {},
+  title: 'My-Studies',
+  setTitle: () => {}
 })
-
-export const useUser = () => {
-  const context = useContext(UserContext)
-  if (!context) {
-    throw new Error('useUser must be used within a UserContextProvider')
-  }
-  return context
-}
 
 type UserProviderProps = {
   children: React.ReactNode
 }
 
 const UserContextProvider = ({ children }: UserProviderProps) => {
-  const userLocalJson = localStorage.getItem('user-data')
-  const userLocal: User | null = userLocalJson ? JSON.parse(userLocalJson) : null
-  const [user, setUser] = useState<User | null>(userLocal)
-  return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>
+  const [user, setUser] = useState<User | null>(null)
+  const [title, setTitle] = useState('My-Studies')
+
+  useEffect(() => {
+    setUser(initUser())
+  }, [])
+
+  return <UserContext.Provider value={{ user, setUser, title, setTitle }}>{children}</UserContext.Provider>
 }
 
 export const context = () => useContext(UserContext)

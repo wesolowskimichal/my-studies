@@ -6,6 +6,7 @@ import ApiService from '../../services/API/ApiService'
 import { ApiResponse } from '../../services/API/ApiResponse'
 import TokenManagerServiceWrapper from '../../services/TokenManager/TokenManagerServiceWrapper'
 import { context } from '../../services/UserContext/UserContext'
+import { useTitle } from '../../hooks/useTitle'
 
 function Register() {
   const [email, setEmail] = useState('')
@@ -13,7 +14,9 @@ function Register() {
   const [name, setName] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
-  const { setUser } = context()
+  const { setUser, title } = context()
+
+  useTitle(`${title} | Register`)
 
   useEffect(() => {
     if (!ApiService.getInstance().isTokenExpired()) {

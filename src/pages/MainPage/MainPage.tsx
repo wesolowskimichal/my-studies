@@ -34,7 +34,7 @@ function MainPage() {
   }
 
   return (
-    <Page name="My-Studies | Main Page">
+    <Page name="Main Page">
       <div className={styles.Wrapper}>{renderComponent()}</div>
     </Page>
   )

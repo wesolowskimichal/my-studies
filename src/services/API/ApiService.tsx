@@ -68,6 +68,35 @@ class ApiService {
     return this.apiRequest(fetchToken)
   }
 
+  public async addPost(
+    userType: User['user_type'],
+    post: RepositoryPost,
+    repositoryId: string
+  ): Promise<ApiServiceResponse<RepositoryPost>> {
+    if (userType === 'Student') {
+      return { data: null, responseCode: ApiResponse.UNAUTHORIZED }
+    }
+    const postPost = async () => {
+      console.log('post')
+      console.log(post)
+      const response = await axios.post(
+        `/api/repository/${repositoryId}/posts/`,
+        {
+          title: post.title,
+          description: post.description,
+          isTask: post.isTask,
+          pinned: post.pinned,
+          due_to: post.due_to
+        },
+        this.getConfig()
+      )
+
+      return response.data
+    }
+
+    return this.apiRequest(postPost)
+  }
+
   public sendEnrollmentRequest = (id: string): Promise<ApiServiceResponse<any>> => {
     const postEnrollment = async () => {
       const bodyParameters = {}
