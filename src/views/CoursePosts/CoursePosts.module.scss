@@ -4,6 +4,26 @@ h1 {
   text-align: center;
 }
 
+.TeacherNav {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  padding-bottom: 0.4rem;
+
+  button {
+    padding: 0.4rem;
+    background-color: #37aa9c;
+    border: 1px solid #eee;
+    border-radius: 1rem;
+
+    &:hover {
+      cursor: pointer;
+      background-color: #94f3e4;
+      transition-duration: 0.7s;
+    }
+  }
+}
+
 .Wrapper {
   display: grid;
   grid-template-columns: 2fr 11fr;
@@ -36,6 +56,17 @@ h1 {
         border-bottom: 1px solid #94f3e4;
         border-top: 1px solid #94f3e4;
         padding: 1rem;
+
+        .TeacherOptions {
+          display: flex;
+          justify-content: right;
+
+          .EditButton {
+            background-color: $background-color-secondary;
+            border-radius: 0.7rem;
+            padding: 0.6rem;
+          }
+        }
 
         button {
           background-color: $background-color;

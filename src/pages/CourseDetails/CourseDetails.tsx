@@ -76,11 +76,7 @@ function CourseDetails() {
           </div>
         )
       case ContentType.Authorized:
-        return (
-          repositoryPosts && (
-            <CoursePosts repositoryId={id!} repositoryPosts={repositoryPosts} setRepositoryPosts={setRepositoryPosts} />
-          )
-        )
+        return repositoryPosts && <CoursePosts repositoryId={id!} repositoryPosts={repositoryPosts} />
       case ContentType.Logged:
         return (
           <div className={styles.NotAuthorized}>
@@ -98,7 +94,7 @@ function CourseDetails() {
   }
 
   return (
-    <Page name="My-Studies Kurs">
+    <Page name="Course Details">
       <div className={styles.Wrapper}>
         <div className={styles.Header}>
           <img src={`${import.meta.env.VITE_APP_API_URL}${repository?.picture}`} alt="Course Image" />

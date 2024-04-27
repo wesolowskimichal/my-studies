@@ -5,6 +5,7 @@ import LogIn from './pages/LogIn/LogIn'
 import MainPage from './pages/MainPage/MainPage'
 import CourseDetails from './pages/CourseDetails/CourseDetails'
 import Profile from './pages/User/Profile/Profile'
+import { CoursePost } from './pages/CoursePost/CoursePost'
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
   {
     path: '/user/:id',
     element: <Profile />
+  },
+  {
+    path: '/course/:courseId/post/:postId?',
+    element: <CoursePost />
   },
   {
     path: '/test_jwt',

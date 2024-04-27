@@ -1,4 +1,11 @@
-import { Repository, RepositoryEnrolment, RepositoryPost, Token, User } from '../../components/interfaces'
+import {
+  Repository,
+  RepositoryEnrolment,
+  RepositoryPost,
+  RepositoryPostFrame,
+  Token,
+  User
+} from '../../components/interfaces'
 import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 import { ApiResponse } from './ApiResponse'
 import { jwtDecode } from 'jwt-decode'
@@ -68,17 +75,45 @@ class ApiService {
     return this.apiRequest(fetchToken)
   }
 
-  public async addPost(
-    userType: User['user_type'],
-    post: RepositoryPost,
-    repositoryId: string
+  public async getPost(
+    repositoryId: Repository['id'],
+    postId: RepositoryPost['id']
   ): Promise<ApiServiceResponse<RepositoryPost>> {
-    if (userType === 'Student') {
-      return { data: null, responseCode: ApiResponse.UNAUTHORIZED }
+    const fetchPost = async () => {
+      const resposnse = await axios.get(`/api/repository/${repositoryId}/post/${postId}`, this.getConfig())
+      return resposnse.data
     }
+
+    return this.apiRequest(fetchPost)
+  }
+
+  public async changePost(
+    post: RepositoryPostFrame,
+    repositoryId: Repository['id'],
+    postId: RepositoryPost['id']
+  ): Promise<ApiServiceResponse<RepositoryPost>> {
+    const putPost = async () => {
+      const response = await axios.put(
+        `/api/repository/${repositoryId}/post/${postId}`,
+        {
+          title: post.title,
+          description: post.description,
+          isTask: post.isTask,
+          pinned: post.pinned,
+          due_to: post.due_to
+        },
+        this.getConfig()
+      )
+      return response.data
+    }
+    return this.apiRequest(putPost)
+  }
+
+  public async addPost(
+    post: RepositoryPostFrame,
+    repositoryId: Repository['id']
+  ): Promise<ApiServiceResponse<RepositoryPost>> {
     const postPost = async () => {
-      console.log('post')
-      console.log(post)
       const response = await axios.post(
         `/api/repository/${repositoryId}/posts/`,
         {

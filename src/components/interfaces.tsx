@@ -33,6 +33,19 @@ export interface RepositoryEnrolment {
 }
 
 export interface RepositoryPost {
+  id: string
+  owner: User
+  repository: Repository
+  title: string
+  description: string
+  attachment: File | null
+  isTask: boolean
+  pinned: boolean
+  due_to: Date
+  created_at: Date
+}
+
+export interface RepositoryPostFrame {
   title: string
   description: string
   attachment: File | null

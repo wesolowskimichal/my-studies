@@ -1,22 +1,34 @@
-import React, { useState } from 'react'
-import { RepositoryPost } from '../../components/interfaces'
-import styles from './AddCoursePost.module.scss'
+import React, { useEffect, useState } from 'react'
+import { RepositoryPostFrame } from '../../components/interfaces'
+import styles from './CoursePostView.module.scss'
 
-type AddCoursePostProps = {
-  setCoursePost: (repositoryPost: RepositoryPost) => void
+type CoursePostViewProps = {
+  coursePost: RepositoryPostFrame | null
+  setCoursePost: (repositoryPost: RepositoryPostFrame) => void
 }
 
-export const AddCoursePost = ({ setCoursePost }: AddCoursePostProps) => {
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [file, setFile] = useState<File | null>(null)
-  const [isTask, setIsTask] = useState(false)
-  const [pinned, setPinned] = useState(false)
-  const [due_to, setDueTo] = useState(new Date())
+export const CoursePostView = ({ coursePost, setCoursePost }: CoursePostViewProps) => {
+  const [title, setTitle] = useState(coursePost ? coursePost.title : '')
+  const [description, setDescription] = useState(coursePost ? coursePost.description : '')
+  const [file, setFile] = useState<File | null>(coursePost ? coursePost.attachment : null)
+  const [isTask, setIsTask] = useState(coursePost ? coursePost.isTask : false)
+  const [pinned, setPinned] = useState(coursePost ? coursePost.pinned : false)
+  const [due_to, setDueTo] = useState(coursePost ? coursePost.due_to : new Date())
+
+  useEffect(() => {
+    if (coursePost) {
+      setTitle(coursePost.title)
+      setDescription(coursePost.description)
+      setFile(coursePost.attachment ?? null)
+      setIsTask(coursePost.isTask)
+      setPinned(coursePost.pinned)
+      setDueTo(new Date(coursePost.due_to))
+    }
+  }, [coursePost])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const newPost: RepositoryPost = {
+    const newPost: RepositoryPostFrame = {
       title,
       description,
       attachment: file,
