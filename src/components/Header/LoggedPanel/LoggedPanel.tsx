@@ -3,16 +3,17 @@ import styles from './LoggedPanel.module.scss'
 import { Link, useNavigate } from 'react-router-dom'
 import Dropdown, { MenuItem } from '../../Dropdown/Dropdown'
 import ContentManagerService from '../../../services/ContentManager/ContentManagerService'
-import ApiService from '../../../services/API/ApiService'
+import { context } from '../../../services/UserContext/UserContext'
 
 function LoggedPanel() {
+  const { user } = context()
   const menuItems: MenuItem[] = [
     {
       itemTitle: 'Profil',
       itemOnClick: () => {
         ContentManagerService.getInstance().setRender('profile')
       },
-      redirect: `/user/${ApiService.getInstance().getUserId()}`
+      redirect: `/user/${user?.id}`
     },
     { itemTitle: 'Oceny', itemOnClick: () => console.log('Oceny'), redirect: '/' },
     { itemTitle: 'Wiadomości', itemOnClick: () => console.log('Wiadomości'), redirect: '/' },
@@ -21,7 +22,6 @@ function LoggedPanel() {
       itemOnClick: () => {
         localStorage.removeItem('accessToken')
         localStorage.removeItem('refreshToken')
-        localStorage.removeItem('user-data')
       },
       redirect: '/login'
     }

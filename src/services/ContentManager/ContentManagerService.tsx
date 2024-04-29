@@ -17,6 +17,7 @@ class ContentManagerService {
   }
 
   public setRender(render: string) {
+    console.log(`old: ${this.render}, new: ${render}`)
     this.render = render
     // Call all registered callback functions when render value changes
     this.renderCallbacks.forEach(callback => callback(render))

@@ -8,12 +8,12 @@ type CoursePostViewProps = {
 }
 
 export const CoursePostView = ({ coursePost, setCoursePost }: CoursePostViewProps) => {
-  const [title, setTitle] = useState(coursePost ? coursePost.title : '')
-  const [description, setDescription] = useState(coursePost ? coursePost.description : '')
-  const [file, setFile] = useState<File | null>(coursePost ? coursePost.attachment : null)
-  const [isTask, setIsTask] = useState(coursePost ? coursePost.isTask : false)
-  const [pinned, setPinned] = useState(coursePost ? coursePost.pinned : false)
-  const [due_to, setDueTo] = useState(coursePost ? coursePost.due_to : new Date())
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [file, setFile] = useState<File | null>(null)
+  const [isTask, setIsTask] = useState(false)
+  const [pinned, setPinned] = useState(false)
+  const [due_to, setDueTo] = useState(new Date())
 
   useEffect(() => {
     if (coursePost) {

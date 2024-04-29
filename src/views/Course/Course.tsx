@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Repository } from '../../components/interfaces'
 import basic_styles from './Course.module.scss'
 import { Link } from 'react-router-dom'

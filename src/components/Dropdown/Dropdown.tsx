@@ -19,12 +19,6 @@ function Dropdown({ title, menuItems }: DropdownProps) {
   const [isOpen, setOpen] = useState(false)
   const [headerClass, setHeaderClass] = useState('')
 
-  useEffect(() => {
-    if (ContentManagerService.getInstance().getRender() !== 'profile') {
-      ContentManagerService.getInstance().setRender('profile')
-    }
-  }, [])
-
   return (
     <div
       className={styles.Wrapper}
