@@ -174,7 +174,13 @@ class ApiService {
       if (!refreshToken) {
         return { data: null, responseCode: ApiResponse.UNAUTHORIZED }
       }
-      const response = await axios.post('/api/token/refresh/')
+      const response = await axios.post(
+        '/api/token/refresh/',
+        {
+          refresh: refreshToken
+        },
+        this.getConfig()
+      )
       return response.data
     }
     return this.apiRequest(refreshToken)

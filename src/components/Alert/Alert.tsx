@@ -11,6 +11,7 @@ interface AlertProps {
 function Alert({ message, timeToRefresh, onClose, onRefresh }: AlertProps) {
   const [time, setTime] = useState(timeToRefresh)
   const [closeHovered, setCloseHovered] = useState(false)
+  const [timerId, setTimerId] = useState<number | null>(null)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -24,9 +25,21 @@ function Alert({ message, timeToRefresh, onClose, onRefresh }: AlertProps) {
         }
       })
     }, 1000)
-
+    setTimerId(timer)
     return () => clearInterval(timer)
   }, [onClose, timeToRefresh])
+
+  const handleOnRefresh = () => {
+    if (!onRefresh) return
+    onRefresh()
+    clearInterval(timerId ?? undefined)
+  }
+
+  const handleOnClose = () => {
+    if (!onClose) return
+    onClose()
+    clearInterval(timerId ?? undefined)
+  }
 
   return (
     <div className={styles.Wrapper}>
@@ -55,7 +68,7 @@ function Alert({ message, timeToRefresh, onClose, onRefresh }: AlertProps) {
                 textAnchor="middle"
                 dominantBaseline="central"
                 className={styles.TimerText}
-                onClick={onClose ? () => onClose() : () => {}}
+                onClick={() => handleOnClose()}
               >
                 {closeHovered ? 'X' : time}
               </text>
@@ -63,7 +76,7 @@ function Alert({ message, timeToRefresh, onClose, onRefresh }: AlertProps) {
           </div>
           <p>{message}</p>
           <div className={styles.Buttons}>
-            <button onClick={onRefresh ? () => onRefresh() : () => {}}>Odnów sesje</button>
+            <button onClick={() => handleOnRefresh()}>Odnów sesje</button>
           </div>
         </div>
       </div>

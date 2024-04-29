@@ -3,12 +3,14 @@ import Alert from '../../components/Alert/Alert'
 import router from '../../router'
 import ApiService from '../API/ApiService'
 import { ApiResponse } from '../API/ApiResponse'
+import TokenManagerServiceWrapper from './TokenManagerServiceWrapper'
 
 class TokenManagerService {
   private static instance: TokenManagerService
   private exp: number
   private interval: any
-  private timeToRefresh = 60 * 2
+  private initTime = 60 * 2
+  private timeToRefresh = this.initTime
 
   private constructor(exp: number) {
     this.exp = exp
@@ -28,23 +30,30 @@ class TokenManagerService {
 
   private isTokenExpired(): boolean {
     const currentTime = Math.floor(Date.now() / 1000)
-    return currentTime + this.timeToRefresh >= this.exp
+    const passed = this.exp - currentTime
+    if (passed <= this.initTime) {
+      this.timeToRefresh = passed
+      return true
+    }
+    return false
+    // return currentTime + this.timeToRefresh >= this.exp - 1180
   }
 
   private showTokenExpiredAlert() {
     const customAlert = document.createElement('div')
     document.body.appendChild(customAlert)
 
-    const closeAlert = () => {
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
-      localStorage.removeItem('user-data')
+    const closeAlert = (clearStorage = true) => {
+      if (clearStorage) {
+        localStorage.removeItem('accessToken')
+        localStorage.removeItem('refreshToken')
+      }
       document.body.removeChild(customAlert)
     }
 
     const onClose = () => {
-      router.navigate('/login', { state: { sessionTimeOut: true } })
       closeAlert()
+      router.navigate('/login', { state: { sessionTimeOut: true } })
     }
 
     const onRefresh = () => {
@@ -52,9 +61,11 @@ class TokenManagerService {
         const newAccessToken = await ApiService.getInstance().getTokenFromRefresh()
         if (newAccessToken.responseCode !== ApiResponse.POSITIVE) {
           console.error('Nie udalo sie odswiezyc sesji')
-          onClose()
+        } else {
+          localStorage.setItem('accessToken', newAccessToken.data?.access!)
+          closeAlert(false)
+          TokenManagerServiceWrapper.launch().setTokenManagerService()
         }
-        localStorage.setItem('accessToken', newAccessToken.data?.access!)
       }
 
       obtainToken()
@@ -69,16 +80,10 @@ class TokenManagerService {
       />,
       customAlert
     )
-
-    setTimeout(() => {
-      closeAlert()
-    }, this.timeToRefresh * 1000)
   }
 
   public static getInstance(exp: number): TokenManagerService {
-    if (!TokenManagerService.instance) {
-      TokenManagerService.instance = new TokenManagerService(exp)
-    }
+    TokenManagerService.instance = new TokenManagerService(exp)
     return TokenManagerService.instance
   }
 }

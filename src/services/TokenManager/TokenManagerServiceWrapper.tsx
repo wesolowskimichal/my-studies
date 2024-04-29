@@ -21,6 +21,7 @@ class TokenManagerServiceWrapper {
       const decodedToken = jwtDecode(accessToken)
       this.serviceTkm = TokenManagerService.getInstance(decodedToken.exp!)
     } catch (error) {
+      console.error(error)
       return
     }
   }
