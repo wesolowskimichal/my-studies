@@ -68,6 +68,7 @@ function CoursePosts({ repositoryId, repositoryPosts }: CoursePostsProps) {
           ))}
         </div>
         <div className={styles.Content}>
+          {/* TODO: move to other file and reuse in CoursePostView as live podglad */}
           {repositoryPosts?.map((post, index) => (
             <div key={index} className={styles.Post}>
               <div className={styles.PostHeader}>
@@ -97,7 +98,17 @@ function CoursePosts({ repositoryId, repositoryPosts }: CoursePostsProps) {
               </div>
 
               <div className={`${styles.PostContent} ${postContentVisibility[index] ? '' : styles.Hide}`}>
-                <p>{post.description}</p>
+                <textarea
+                  readOnly
+                  ref={textarea => {
+                    if (textarea) {
+                      textarea.style.height = ''
+                      textarea.style.height = `${textarea.scrollHeight}px`
+                    }
+                  }}
+                >
+                  {post.description}
+                </textarea>
                 {post.attachment && (
                   <>
                     <a href={`${import.meta.env.VITE_APP_API_URL}${post?.attachment}`} target="_blank">

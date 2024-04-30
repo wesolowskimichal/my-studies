@@ -1,5 +1,39 @@
 .AddPostForm {
   display: flex;
-  justify-content: space-around;
   align-items: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+
+  div {
+    flex-basis: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 1rem;
+
+    label {
+      flex-basis: 100%;
+      text-align: center;
+      font-size: 2rem;
+    }
+
+    input {
+      flex-basis: 100%;
+      padding: 0.4rem;
+    }
+
+    textarea {
+      flex-basis: 100%;
+      min-height: 250px;
+      height: max-content;
+      resize: vertical;
+    }
+  }
+
+  .Footer {
+    div {
+      flex-wrap: nowrap;
+    }
+  }
 }

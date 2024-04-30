@@ -4,24 +4,52 @@ import styles from './CourseDetails.module.scss'
 import CoursePosts from '../../views/CoursePosts/CoursePosts'
 import ApiService from '../../services/API/ApiService'
 import { ApiResponse } from '../../services/API/ApiResponse'
-import { Repository, RepositoryPost } from '../../components/interfaces'
+import { Repository, RepositoryPost, User } from '../../components/interfaces'
 import Page from '../page/Page'
+import { context } from '../../services/UserContext/UserContext'
 
 function CourseDetails() {
   enum ContentType {
     Logged = 'logged',
     Authorized = 'authorized',
     Anonymous = 'anonymous',
-    Loading = 'loader'
+    Loading = 'loader',
+    Waiting = 'waiting',
+    WaitingTeacher = 'waitingTeacher'
   }
+
+  const { user } = context()
+  const { id } = useParams<{ id: string }>()
 
   const [repository, setRepository] = useState<Repository>()
   const [repositoryPosts, setRepositoryPosts] = useState<RepositoryPost[]>([])
   const [contentType, setContentType] = useState<ContentType>(ContentType.Loading)
-
-  const { id } = useParams<{ id: string }>()
+  const [oUser, setOUser] = useState<User | null>(user)
 
   useEffect(() => {
+    setOUser(user)
+  }, [user])
+
+  useEffect(() => {
+    // TODO: moze jakos zoptymalizowac?
+    // sprawdza tylko studentow
+    const checkApproval = async (): Promise<boolean> => {
+      if (user) {
+        const response = await ApiService.getInstance().getMyRepositories(user.user_type)
+        const repoCheck = response.data?.find(repository => repository.id === id)
+        if (response.responseCode === ApiResponse.POSITIVE) {
+          if (!repoCheck) {
+            user.user_type === 'Student'
+              ? setContentType(ContentType.Waiting)
+              : setContentType(ContentType.WaitingTeacher)
+            return false
+          }
+          return true
+        }
+      }
+      return false
+    }
+
     const getPosts = async () => {
       const response = await ApiService.getInstance().getRepositoryPosts(id!)
       if (response.responseCode !== ApiResponse.POSITIVE) {
@@ -33,20 +61,24 @@ function CourseDetails() {
         }
         return
       }
-      const posts = response.data!
-      posts.sort((a: RepositoryPost, b: RepositoryPost) => {
-        const dateA = new Date(a.created_at)
-        const dateB = new Date(b.created_at)
-        if (a.pinned && !b.pinned) {
-          return -1
-        } else if (!a.pinned && b.pinned) {
-          return 1
-        } else {
-          return dateA - dateB
-        }
-      })
-      setRepositoryPosts(posts)
-      setContentType(ContentType.Authorized)
+      const shouldLoadPosts = await checkApproval()
+      console.log(`shouldloadposts: ${shouldLoadPosts}`)
+      if (shouldLoadPosts) {
+        const posts = response.data!
+        posts.sort((a: RepositoryPost, b: RepositoryPost) => {
+          const dateA = new Date(a.created_at)
+          const dateB = new Date(b.created_at)
+          if (a.pinned && !b.pinned) {
+            return -1
+          } else if (!a.pinned && b.pinned) {
+            return 1
+          } else {
+            return dateA - dateB
+          }
+        })
+        setRepositoryPosts(posts)
+        setContentType(ContentType.Authorized)
+      }
     }
 
     const getCourse = async () => {
@@ -60,7 +92,7 @@ function CourseDetails() {
       await getPosts()
     }
     getCourse()
-  }, [])
+  }, [user])
 
   const renderContent = () => {
     switch (contentType) {
@@ -81,11 +113,32 @@ function CourseDetails() {
         return (
           <div className={styles.NotAuthorized}>
             <span>
-              <b>Nie został Ci przyznany dostęp do kursy</b>
+              <b>Nie został Ci przyznany dostęp do kursu</b>
             </span>
             <div>
               <a onClick={() => ApiService.getInstance().sendEnrollmentRequest(id!)}>Wyślij prośbę o dołączenie</a>
             </div>
+          </div>
+        )
+      case ContentType.Waiting:
+        return (
+          <div className={styles.NotAuthorized}>
+            <span>
+              <b>Nie został Ci jescze przyznany dostęp do kursu. Właściciel musi zatwierdzić twoją prośbę.</b>
+            </span>
+            <div>
+              <a onClick={() => ApiService.getInstance().sendEnrollmentRequest(id!)}>
+                Wyślij ponownie prośbę o dołączenie
+              </a>
+            </div>
+          </div>
+        )
+      case ContentType.WaitingTeacher:
+        return (
+          <div className={styles.NotAuthorized}>
+            <span>
+              <b>Nie zostało Ci przyznane członkostwo do kursu. Poproś właściciela o dodanie</b>
+            </span>
           </div>
         )
       case ContentType.Loading:

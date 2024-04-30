@@ -1,6 +1,5 @@
-import React, { Dispatch, SetStateAction } from 'react'
 import styles from './LoggedPanel.module.scss'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Dropdown, { MenuItem } from '../../Dropdown/Dropdown'
 import ContentManagerService from '../../../services/ContentManager/ContentManagerService'
 import { context } from '../../../services/UserContext/UserContext'

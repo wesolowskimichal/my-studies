@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import ApiService from '../../services/API/ApiService'
 import { ApiResponse } from '../../services/API/ApiResponse'
 import { CoursePostView } from '../../views/CoursePostView/CoursePostView'
-import { context } from '../../services/UserContext/UserContext'
+import Page from '../page/Page'
 
 type PageParams = {
   courseId: string
@@ -54,5 +54,9 @@ export const CoursePost = () => {
     postId ? changeCoursePost() : addCoursePost()
   }
 
-  return <CoursePostView coursePost={post} setCoursePost={handlePostPost} />
+  return (
+    <Page name="Post">
+      <CoursePostView coursePost={post} setCoursePost={handlePostPost} />
+    </Page>
+  )
 }

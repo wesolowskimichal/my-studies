@@ -100,6 +100,12 @@ h1 {
           display: none;
         }
 
+        textarea {
+          resize: none;
+          width: 100%;
+          height: auto;
+        }
+
         a {
           padding: 0.2rem;
           text-decoration: none;

@@ -10,12 +10,14 @@
 
   .Header {
     display: grid;
-    grid-template-columns: 2fr 11fr;
+    grid-template-columns: 2fr 6fr;
     padding-bottom: 1rem;
     border-bottom: 1px solid $decoration-color-light;
 
     img {
-      max-height: 250px;
+      max-height: 100%;
+      width: 100%;
+      align-self: center;
     }
 
     .Info {

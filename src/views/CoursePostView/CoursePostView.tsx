@@ -48,32 +48,35 @@ export const CoursePostView = ({ coursePost, setCoursePost }: CoursePostViewProp
   return (
     <form onSubmit={handleSubmit} className={styles.AddPostForm}>
       <div>
-        <label>Title:</label>
+        <label>Tytuł</label>
         <input type="text" value={title} onChange={e => setTitle(e.target.value)} />
       </div>
       <div>
         <label>Description:</label>
         <textarea value={description} onChange={e => setDescription(e.target.value)} />
       </div>
-      <div>
-        <label>File:</label>
-        <input type="file" onChange={handleFileChange} /> {/* Handle file input change */}
-      </div>
-      <div>
-        <label>Is Task:</label>
-        <input type="checkbox" checked={isTask} onChange={e => setIsTask(e.target.checked)} />
-      </div>
-      <div>
-        <label>Pinned:</label>
-        <input type="checkbox" checked={pinned} onChange={e => setPinned(e.target.checked)} />
-      </div>
-      <div>
-        <label>Due To:</label>
-        <input
-          type="date"
-          value={due_to.toISOString().split('T')[0]}
-          onChange={e => setDueTo(new Date(e.target.value))}
-        />
+      <div className={styles.Footer}>
+        <div>
+          <label>File:</label>
+          <input type="file" onChange={handleFileChange} /> {/* Handle file input change */}
+        </div>
+        <div>
+          <label>Is Task:</label>
+          <input type="checkbox" checked={isTask} onChange={e => setIsTask(e.target.checked)} />
+        </div>
+        <div>
+          <label>Pinned:</label>
+          <input type="checkbox" checked={pinned} onChange={e => setPinned(e.target.checked)} />
+        </div>
+        <div>
+          <label>Due To:</label>
+          <input
+            type="date"
+            value={due_to.toISOString().split('T')[0]}
+            onChange={e => setDueTo(new Date(e.target.value))}
+          />
+          <input type="time" />
+        </div>
       </div>
       <button type="submit">Submit</button>
     </form>

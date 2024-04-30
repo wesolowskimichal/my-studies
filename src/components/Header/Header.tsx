@@ -2,7 +2,7 @@ import styles from './Header.module.scss'
 import logo from '/logo.svg'
 import LoggedPanel from './LoggedPanel/LoggedPanel'
 import { Link } from 'react-router-dom'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import ApiService from '../../services/API/ApiService'
 
 function Header() {
