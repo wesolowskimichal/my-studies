@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import styles from './CourseDetails.module.scss'
 import CoursePosts from '../../views/CoursePosts/CoursePosts'
 import ApiService from '../../services/API/ApiService'
@@ -20,15 +20,18 @@ function CourseDetails() {
 
   const { user } = context()
   const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
 
   const [repository, setRepository] = useState<Repository>()
   const [repositoryPosts, setRepositoryPosts] = useState<RepositoryPost[]>([])
   const [contentType, setContentType] = useState<ContentType>(ContentType.Loading)
-  const [oUser, setOUser] = useState<User | null>(user)
+  const [postContentVisibility, setPostContentVisibility] = useState<boolean[]>(
+    Array(repositoryPosts?.length).fill(true)
+  )
 
   useEffect(() => {
-    setOUser(user)
-  }, [user])
+    setPostContentVisibility(Array(repositoryPosts?.length).fill(true))
+  }, [repositoryPosts])
 
   useEffect(() => {
     // TODO: moze jakos zoptymalizowac?
@@ -62,7 +65,6 @@ function CourseDetails() {
         return
       }
       const shouldLoadPosts = await checkApproval()
-      console.log(`shouldloadposts: ${shouldLoadPosts}`)
       if (shouldLoadPosts) {
         const posts = response.data!
         posts.sort((a: RepositoryPost, b: RepositoryPost) => {
@@ -94,6 +96,10 @@ function CourseDetails() {
     getCourse()
   }, [user])
 
+  const togglePostContentVisibility = (index: number) => {
+    setPostContentVisibility(prevState => prevState.map((value, i) => (i === index ? !value : value)))
+  }
+
   const renderContent = () => {
     switch (contentType) {
       case ContentType.Anonymous:
@@ -107,8 +113,6 @@ function CourseDetails() {
             </div>
           </div>
         )
-      case ContentType.Authorized:
-        return repositoryPosts && <CoursePosts repositoryId={id!} repositoryPosts={repositoryPosts} />
       case ContentType.Logged:
         return (
           <div className={styles.NotAuthorized}>
@@ -143,6 +147,38 @@ function CourseDetails() {
         )
       case ContentType.Loading:
         return <div className="loader"></div>
+      case ContentType.Authorized:
+        return repositoryPosts && repositoryPosts.length > 0 ? (
+          <>
+            {user && user.user_type === 'Teacher' && (
+              <nav className={styles.TeacherNav}>
+                <button onClick={() => navigate(`/course/${id}/post/`)}>Dodaj Post</button>
+              </nav>
+            )}
+            <div className={styles.CourseWrapper}>
+              <div className={styles.CourseSideBar}>
+                <h3>Tematy:</h3>
+                {repositoryPosts?.map((post, index) => (
+                  <a href="#" key={index}>
+                    {post.title}
+                  </a>
+                ))}
+              </div>
+              <div className={styles.CourseContent}>
+                {repositoryPosts?.map((post, index) => (
+                  <CoursePosts
+                    post={post}
+                    postContentVisibility={postContentVisibility[index]}
+                    togglePostContentVisibility={() => togglePostContentVisibility(index)}
+                    repositoryId={id!}
+                  />
+                ))}
+              </div>
+            </div>
+          </>
+        ) : (
+          <h1>Brak postów</h1>
+        )
     }
   }
 
