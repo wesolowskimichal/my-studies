@@ -38,6 +38,41 @@ export const CoursePostView = ({ coursePost, onSubmit, setCoursePost }: CoursePo
     })
   }
 
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedDate = new Date(e.target.value)
+    console.log(selectedDate)
+
+    const options: Intl.DateTimeFormatOptions = {
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric'
+    }
+
+    setDueTo(new Date(new Date(selectedDate).toLocaleDateString('pl-PL', options)))
+  }
+
+  const stringifyDate = (dueDate: Date): string => {
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false // Ensure 24-hour format
+    }
+
+    const formattedDate = new Date(dueDate).toLocaleString('pl-PL', options)
+
+    const [datePart, timePart] = formattedDate.split(', ')
+
+    const [day, month, year] = datePart.split('.')
+    const [hour, minute] = timePart.split(':')
+
+    return `${year}-${month}-${day}T${hour}:${minute}`
+  }
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]) // Store the file object
@@ -53,30 +88,29 @@ export const CoursePostView = ({ coursePost, onSubmit, setCoursePost }: CoursePo
           <input type="text" value={title} onChange={e => setTitle(e.target.value)} />
         </div>
         <div>
-          <label>Description:</label>
+          <label>Opis:</label>
           <textarea value={description} onChange={e => setDescription(e.target.value)} />
         </div>
         <div className={styles.Footer}>
           <div>
-            <label>File:</label>
+            <label>Załączniki:</label>
             <input type="file" onChange={handleFileChange} />
           </div>
           <div>
-            <label>Is Task:</label>
+            <label>Zadanie:</label>
             <input type="checkbox" checked={isTask} onChange={e => setIsTask(e.target.checked)} />
           </div>
           <div>
-            <label>Pinned:</label>
+            <label>Przypięty:</label>
             <input type="checkbox" checked={pinned} onChange={e => setPinned(e.target.checked)} />
           </div>
           <div>
-            <label>Due To:</label>
+            <label>Dostępny do:</label>
             <input
-              type="date"
-              value={due_to.toISOString().split('T')[0]}
+              type="datetime-local"
+              value={stringifyDate(due_to)}
               onChange={e => setDueTo(new Date(e.target.value))}
             />
-            <input type="time" />
           </div>
         </div>
         <button type="submit">Submit</button>

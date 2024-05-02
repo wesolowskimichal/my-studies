@@ -31,8 +31,20 @@ function CoursePosts({
     return false
   }
 
-  const stringifyDate = (dueDate: Date): string => {
-    return dueDate.toString()
+  const stringifyDate = (dueDate: Date | undefined): string => {
+    if (!dueDate) {
+      return ''
+    }
+
+    const options: Intl.DateTimeFormatOptions = {
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric'
+    }
+
+    return new Date(dueDate).toLocaleDateString('pl-PL', options)
   }
 
   const getCssPostHeaderClass = (repositoryPost: RepositoryPost): string => {

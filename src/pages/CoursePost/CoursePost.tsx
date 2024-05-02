@@ -67,17 +67,18 @@ export const CoursePost = () => {
   return (
     <Page name="Post">
       <div className={styles.Wrapper}>
-        <div className={styles.EditView}>{content}</div>
+        <div className={styles.EditView}>
+          <h1>{postId ? <>Edycja wpisu</> : <>Tworzenie wpisu</>}:</h1>
+          {content}
+        </div>
         <div className={styles.PreviewView}>
-          {post && (
-            <CoursePosts
-              post={postValue}
-              postContentVisibility={true}
-              togglePostContentVisibility={() => {}}
-              repositoryId={courseId!}
-              asView={true}
-            />
-          )}
+          <CoursePosts
+            post={postValue}
+            postContentVisibility={true}
+            togglePostContentVisibility={() => {}}
+            repositoryId={courseId!}
+            asView={true}
+          />
         </div>
       </div>
     </Page>

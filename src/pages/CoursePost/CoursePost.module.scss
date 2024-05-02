@@ -1,14 +1,21 @@
 .Wrapper {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   padding: 1rem;
+
   .EditView {
-    flex-basis: 50%;
+    flex-basis: 35%;
+    border: 1px solid #37aa9c;
+
+    h1 {
+      text-align: center;
+      border-bottom: 1px solid #37aa9c;
+      padding-bottom: 1rem;
+    }
   }
   .PreviewView {
-    position: fixed;
-    left: 50%;
-    width: 49%;
+    flex-grow: 1;
+    padding: 1rem;
   }
 }

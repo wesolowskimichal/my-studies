@@ -14,13 +14,13 @@
 
     label {
       flex-basis: 100%;
-      text-align: center;
-      font-size: 2rem;
+      font-size: 1.4rem;
     }
 
     input {
       flex-basis: 100%;
       padding: 0.4rem;
+      background-color: #333f44;
     }
 
     textarea {
@@ -28,12 +28,18 @@
       min-height: 250px;
       height: max-content;
       resize: vertical;
+      background-color: #333f44;
+      padding: 0.4rem;
     }
   }
 
   .Footer {
     div {
       flex-wrap: nowrap;
+
+      input[type='file'] {
+        background-color: #1a1a1b;
+      }
     }
   }
 }
