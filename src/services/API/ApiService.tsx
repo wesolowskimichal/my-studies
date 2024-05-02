@@ -1,11 +1,4 @@
-import {
-  Repository,
-  RepositoryEnrolment,
-  RepositoryPost,
-  RepositoryPostFrame,
-  Token,
-  User
-} from '../../components/interfaces'
+import { Repository, RepositoryEnrolment, RepositoryPost, Token, User } from '../../components/interfaces'
 import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 import { ApiResponse } from './ApiResponse'
 import { jwtDecode } from 'jwt-decode'
@@ -88,7 +81,7 @@ class ApiService {
   }
 
   public async changePost(
-    post: RepositoryPostFrame,
+    post: RepositoryPost,
     repositoryId: Repository['id'],
     postId: RepositoryPost['id']
   ): Promise<ApiServiceResponse<RepositoryPost>> {
@@ -110,7 +103,7 @@ class ApiService {
   }
 
   public async addPost(
-    post: RepositoryPostFrame,
+    post: RepositoryPost,
     repositoryId: Repository['id']
   ): Promise<ApiServiceResponse<RepositoryPost>> {
     const postPost = async () => {

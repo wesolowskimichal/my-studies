@@ -13,9 +13,16 @@ interface CoursePostsProps {
   postContentVisibility: boolean
   togglePostContentVisibility: () => void
   repositoryId: string
+  asView?: boolean
 }
 
-function CoursePosts({ post, postContentVisibility, togglePostContentVisibility, repositoryId }: CoursePostsProps) {
+function CoursePosts({
+  post,
+  postContentVisibility,
+  togglePostContentVisibility,
+  repositoryId,
+  asView = false
+}: CoursePostsProps) {
   const { user } = context()
   const navigate = useNavigate()
   const [files, setFiles] = useState<File[]>([])
@@ -47,11 +54,11 @@ function CoursePosts({ post, postContentVisibility, togglePostContentVisibility,
           <h1 className={getCssPostHeaderClass(post)}>{post.title}</h1>
           {post.isTask && (
             <div className={styles.PostHeaderFooterTaskInfo}>
-              <h4>Otwarto: {stringifyDate(post.created_at)}</h4>
+              <h4>Otwarto: {stringifyDate(post.created_at ?? new Date())}</h4>
               <h4>Wymagane do: {stringifyDate(post.due_to)}</h4>
             </div>
           )}
-          {user && user.user_type === 'Teacher' && (
+          {!asView && user && user.user_type === 'Teacher' && (
             <div className={styles.TeacherOptions}>
               <button className={styles.EditButton} onClick={() => navigate(`/course/${repositoryId}/post/${post.id}`)}>
                 Edit
@@ -69,9 +76,8 @@ function CoursePosts({ post, postContentVisibility, togglePostContentVisibility,
                 textarea.style.height = `${textarea.scrollHeight}px`
               }
             }}
-          >
-            {post.description}
-          </textarea>
+            value={post.description}
+          />
           {post.attachment && (
             <>
               <a href={`${import.meta.env.VITE_APP_API_URL}${post?.attachment}`} target="_blank">

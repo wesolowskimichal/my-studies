@@ -68,8 +68,8 @@ function CourseDetails() {
       if (shouldLoadPosts) {
         const posts = response.data!
         posts.sort((a: RepositoryPost, b: RepositoryPost) => {
-          const dateA = new Date(a.created_at)
-          const dateB = new Date(b.created_at)
+          const dateA = new Date(a.created_at!)
+          const dateB = new Date(b.created_at!)
           if (a.pinned && !b.pinned) {
             return -1
           } else if (!a.pinned && b.pinned) {
@@ -167,6 +167,7 @@ function CourseDetails() {
               <div className={styles.CourseContent}>
                 {repositoryPosts?.map((post, index) => (
                   <CoursePosts
+                    key={index}
                     post={post}
                     postContentVisibility={postContentVisibility[index]}
                     togglePostContentVisibility={() => togglePostContentVisibility(index)}

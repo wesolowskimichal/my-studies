@@ -1,5 +1,14 @@
-.AddPostForm {
+.Wrapper {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 1rem;
+  .EditView {
+    flex-basis: 50%;
+  }
+  .PreviewView {
+    position: fixed;
+    left: 50%;
+    width: 49%;
+  }
 }
