@@ -113,7 +113,7 @@ export const CoursePostView = ({ coursePost, onSubmit, setCoursePost }: CoursePo
             />
           </div>
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit">Zatwierdź</button>
       </form>
     ),
     postValue: {

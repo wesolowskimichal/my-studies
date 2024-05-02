@@ -20,7 +20,7 @@
     input {
       flex-basis: 100%;
       padding: 0.4rem;
-      background-color: #333f44;
+      background-color: #333335;
     }
 
     textarea {
@@ -28,7 +28,7 @@
       min-height: 250px;
       height: max-content;
       resize: vertical;
-      background-color: #333f44;
+      background-color: #333335;
       padding: 0.4rem;
     }
   }
@@ -40,6 +40,20 @@
       input[type='file'] {
         background-color: #1a1a1b;
       }
+    }
+  }
+
+  button {
+    padding: 0.6rem;
+    background-color: #37aa9c;
+    border: 1px solid #94f3e4;
+    margin: 0 auto 1rem auto;
+    border-radius: 1rem;
+
+    &:hover {
+      transition-duration: 0.4s;
+      cursor: pointer;
+      background-color: #37aa9da0;
     }
   }
 }

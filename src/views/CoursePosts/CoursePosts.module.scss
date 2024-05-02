@@ -46,17 +46,21 @@
   }
 
   .PostContent {
-    padding: 1rem;
     background-color: #333335;
+    width: 100%;
 
     &.Hide {
       display: none;
     }
 
     textarea {
+      box-sizing: border-box;
       resize: none;
       width: 100%;
-      height: auto;
+      border: 0;
+      padding: 0.4rem;
+      background-color: #333335;
+      color: #eee;
     }
 
     a {

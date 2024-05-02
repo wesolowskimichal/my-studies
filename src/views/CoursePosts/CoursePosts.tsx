@@ -82,6 +82,7 @@ function CoursePosts({
         <div className={`${styles.PostContent} ${postContentVisibility ? '' : styles.Hide}`}>
           <textarea
             readOnly
+            disabled
             ref={textarea => {
               if (textarea) {
                 textarea.style.height = ''
