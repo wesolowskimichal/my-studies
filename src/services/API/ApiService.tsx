@@ -68,6 +68,61 @@ class ApiService {
     return this.apiRequest(fetchToken)
   }
 
+  public async getTeachers(): Promise<ApiServiceResponse<User[]>> {
+    const fetchTeachers = async () => {
+      const response = await axios.get('/api/teachers/', this.getConfig())
+      return response.data
+    }
+
+    return this.apiRequest(fetchTeachers)
+  }
+
+  public async getEnrollments(repositoryId: Repository['id']): Promise<ApiServiceResponse<RepositoryEnrolment[]>> {
+    const fetchEnrollments = async () => {
+      const response = await axios.get(`/api/repository/${repositoryId}/members/`, this.getConfig())
+      return response.data
+    }
+
+    return this.apiRequest(fetchEnrollments)
+  }
+
+  public async changeEnrollment(
+    repositoryId: Repository['id'],
+    userId: User['id']
+  ): Promise<ApiServiceResponse<RepositoryEnrolment[]>> {
+    const chgEnrollment = async () => {
+      const bodyParameters = {}
+      const response = await axios.post(
+        `/api/repository/${repositoryId}/member/${userId}`,
+        bodyParameters,
+        this.getConfig()
+      )
+      return response.data
+    }
+
+    return this.apiRequest(chgEnrollment)
+  }
+
+  public async changeRepository(repository: Repository): Promise<ApiServiceResponse<Repository>> {
+    const putRepository = async () => {
+      const requestData = new FormData()
+      requestData.append('name', repository.name)
+      repository.owners.forEach(owner => {
+        requestData.append('owners[]', owner.id)
+      })
+
+      if (repository.newPicture) {
+        requestData.append('picture', repository.newPicture)
+      }
+
+      const response = await axios.put(`/api/teacher/repository/${repository.id}/`, requestData, this.getConfig(true))
+
+      return response.data
+    }
+
+    return this.apiRequest(putRepository)
+  }
+
   public async getPost(
     repositoryId: Repository['id'],
     postId: RepositoryPost['id']
@@ -206,21 +261,21 @@ class ApiService {
     return this.apiRequest(fetchRepositories)
   }
 
-  public async getStudentRepositories(): Promise<ApiServiceResponse<RepositoryEnrolment[]>> {
-    const fetchStudentRepositories = async (): Promise<RepositoryEnrolment[]> => {
-      const response = await axios.get('/api/user/repositories/', this.getConfig())
-      return response.data
-    }
-    return this.apiRequest(fetchStudentRepositories)
-  }
+  // public async getStudentRepositories(): Promise<ApiServiceResponse<RepositoryEnrolment[]>> {
+  //   const fetchStudentRepositories = async (): Promise<RepositoryEnrolment[]> => {
+  //     const response = await axios.get('/api/user/repositories/', this.getConfig())
+  //     return response.data
+  //   }
+  //   return this.apiRequest(fetchStudentRepositories)
+  // }
 
-  public async getTeacherRepositories(): Promise<ApiServiceResponse<Repository[]>> {
-    const fetchTeacherRepositories = async (): Promise<Repository[]> => {
-      const response = await axios.get('/api/teacher/repositories/', this.getConfig())
-      return response.data
-    }
-    return this.apiRequest(fetchTeacherRepositories)
-  }
+  // public async getTeacherRepositories(): Promise<ApiServiceResponse<Repository[]>> {
+  //   const fetchTeacherRepositories = async (): Promise<Repository[]> => {
+  //     const response = await axios.get('/api/teacher/repositories/', this.getConfig())
+  //     return response.data
+  //   }
+  //   return this.apiRequest(fetchTeacherRepositories)
+  // }
 
   public async getMyRepositories(userType: User['user_type']): Promise<ApiServiceResponse<Repository[]>> {
     const fetchStudentRepositories = async (): Promise<RepositoryEnrolment[]> => {
@@ -266,10 +321,18 @@ class ApiService {
     return this.apiRequest(fetchRepositoryPosts)
   }
 
-  private getConfig(): AxiosRequestConfig<any> | undefined {
+  private getConfig(mutliplatformFormData = false): AxiosRequestConfig<any> | undefined {
     const accessToken = localStorage.getItem('accessToken')
     if (this.isTokenExpired()) {
       return undefined
+    }
+    if (mutliplatformFormData) {
+      return {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      }
     }
     return {
       headers: {

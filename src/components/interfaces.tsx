@@ -14,6 +14,7 @@ export interface User {
   last_name: string
   user_type: 'Student' | 'Teacher'
   picture: string
+  newPicture?: File | null
   email: string
 }
 
@@ -21,6 +22,7 @@ export interface Repository {
   id: string
   name: string
   picture: string
+  newPicture?: File | null
   owners: User[]
   url: string
 }

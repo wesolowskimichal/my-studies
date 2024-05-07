@@ -20,3 +20,21 @@ $font-family: 'Roboto', sans-serif;
     transform: rotate(0.5turn);
   }
 }
+
+.centeredLoader {
+  width: 50px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 8px solid;
+  border-color: $decoration-color-dark $decoration-color-light;
+  animation: l1 1s infinite;
+  margin: 0 auto;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+}
+@keyframes l1 {
+  to {
+    transform: rotate(0.5turn);
+  }
+}

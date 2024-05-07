@@ -6,6 +6,7 @@ import MainPage from './pages/MainPage/MainPage'
 import CourseDetails from './pages/CourseDetails/CourseDetails'
 import Profile from './pages/User/Profile/Profile'
 import { CoursePost } from './pages/CoursePost/CoursePost'
+import { EditCourse } from './pages/EditCourse/EditCourse'
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: '/course/:id',
     element: <CourseDetails />
+  },
+  {
+    path: '/course/:id/edit',
+    element: <EditCourse />
   },
   {
     path: '/user/:id',

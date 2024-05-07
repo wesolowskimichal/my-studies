@@ -1,0 +1,82 @@
+.None {
+  display: none;
+}
+
+.Hide {
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  background-color: green;
+  border: 1px solid #eee;
+  border-radius: 1rem;
+  z-index: 1000;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  animation: slideOutRight 0.5s forwards;
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.Show {
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  background-color: green;
+  border: 1px solid #eee;
+  border-radius: 1rem;
+  z-index: 1000;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  animation: slideInRight 0.5s forwards;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.Circle {
+  transform: rotate(-90deg) translateY(10px);
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.ProgressCircle {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: countdown var(--time) linear forwards;
+}
+
+@keyframes countdown {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.TimerText {
+  font-size: 18px;
+  fill: white;
+  transform: rotate(90deg);
+  transform-origin: 50% 50%;
+  text-anchor: middle;
+  dominant-baseline: central;
+}

@@ -24,12 +24,14 @@ export const CoursePost = () => {
     attachment: null,
     due_to: new Date()
   })
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const getPost = async () => {
       const response = await ApiService.getInstance().getPost(courseId!, postId!)
       if (response.responseCode === ApiResponse.POSITIVE) {
         setPost(response.data!)
+        setLoading(false)
       }
     }
 
@@ -65,22 +67,26 @@ export const CoursePost = () => {
   const { content, postValue } = CoursePostView({ coursePost: post, onSubmit: handlePostPost, setCoursePost: setPost })
 
   return (
-    <Page name="Post">
-      <div className={styles.Wrapper}>
-        <div className={styles.EditView}>
-          <h1>{postId ? <>Edycja wpisu</> : <>Tworzenie wpisu</>}:</h1>
-          {content}
+    <Page name="Post" teacherOnly={true}>
+      {loading ? (
+        <div className="centeredLoader"></div>
+      ) : (
+        <div className={styles.Wrapper}>
+          <div className={styles.EditView}>
+            <h1>{postId ? <>Edycja wpisu</> : <>Tworzenie wpisu</>}:</h1>
+            {content}
+          </div>
+          <div className={styles.PreviewView}>
+            <CoursePosts
+              post={postValue}
+              postContentVisibility={true}
+              togglePostContentVisibility={() => {}}
+              repositoryId={courseId!}
+              asView={true}
+            />
+          </div>
         </div>
-        <div className={styles.PreviewView}>
-          <CoursePosts
-            post={postValue}
-            postContentVisibility={true}
-            togglePostContentVisibility={() => {}}
-            repositoryId={courseId!}
-            asView={true}
-          />
-        </div>
-      </div>
+      )}
     </Page>
   )
 }

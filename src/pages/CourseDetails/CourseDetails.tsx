@@ -152,6 +152,7 @@ function CourseDetails() {
           <>
             {user && user.user_type === 'Teacher' && (
               <nav className={styles.TeacherNav}>
+                <button onClick={() => navigate(`/course/${id}/edit/`)}>Edytuj</button>
                 <button onClick={() => navigate(`/course/${id}/post/`)}>Dodaj Post</button>
               </nav>
             )}

@@ -1,0 +1,17 @@
+@import '../../utils/variables.scss';
+$size: 90px;
+
+.UserRow {
+  display: grid;
+  grid-template-columns: $size 1fr 1fr 1fr;
+  grid-template-rows: $size;
+  align-items: center;
+  justify-items: center;
+
+  img {
+    max-width: $size;
+    max-height: $size;
+    border-radius: calc($size / 2);
+    border: 1px solid $decoration-color-light;
+  }
+}
