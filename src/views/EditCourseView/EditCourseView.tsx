@@ -18,7 +18,7 @@ type EditCourseViewProps = {
 
 export const EditCourseView = ({ repository, onSubmit }: EditCourseViewProps) => {
   const navigate = useNavigate()
-  const { setPopupType, setTime, setMessage, setTrigger, popup } = usePopup()
+  const { setPopupType, setTime, setMessage, setTrigger, handleError, popup } = usePopup()
 
   const [name, setName] = useState<string>('')
   const [picture, setPicture] = useState<string>('')
@@ -178,7 +178,7 @@ export const EditCourseView = ({ repository, onSubmit }: EditCourseViewProps) =>
       setTrigger(true)
     } else {
       setPopupType('Warning')
-      setMessage('Nie udało się zapisać zmian')
+      handleError(response)
       setTime(4)
       setTrigger(true)
     }

@@ -141,16 +141,22 @@ class ApiService {
     postId: RepositoryPost['id']
   ): Promise<ApiServiceResponse<RepositoryPost>> {
     const putPost = async () => {
+      const requestData = new FormData()
+      requestData.append('title', post.title)
+      requestData.append('description', post.description)
+      requestData.append('pinned', post.pinned ? 'True' : 'False')
+      requestData.append('isTask', post.isTask ? 'True' : 'False')
+      requestData.append('due_to', post.due_to.toISOString())
+
+      if (post.attachment instanceof File) {
+        requestData.append('attachment', post.attachment)
+        console.log(post.attachment)
+      }
+
       const response = await axios.put(
         `/api/repository/${repositoryId}/post/${postId}`,
-        {
-          title: post.title,
-          description: post.description,
-          isTask: post.isTask,
-          pinned: post.pinned,
-          due_to: post.due_to
-        },
-        this.getConfig()
+        requestData,
+        this.getConfig(true)
       )
       return response.data
     }
@@ -162,17 +168,18 @@ class ApiService {
     repositoryId: Repository['id']
   ): Promise<ApiServiceResponse<RepositoryPost>> {
     const postPost = async () => {
-      const response = await axios.post(
-        `/api/repository/${repositoryId}/posts/`,
-        {
-          title: post.title,
-          description: post.description,
-          isTask: post.isTask,
-          pinned: post.pinned,
-          due_to: post.due_to
-        },
-        this.getConfig()
-      )
+      const requestData = new FormData()
+      requestData.append('title', post.title)
+      requestData.append('description', post.description)
+      requestData.append('pinned', post.pinned ? 'True' : 'False')
+      requestData.append('isTask', post.isTask ? 'True' : 'False')
+      requestData.append('due_to', post.due_to.toISOString())
+
+      if (post.attachment instanceof File) {
+        requestData.append('attachment', post.attachment)
+      }
+
+      const response = await axios.post(`/api/repository/${repositoryId}/posts/`, requestData, this.getConfig(true))
 
       return response.data
     }

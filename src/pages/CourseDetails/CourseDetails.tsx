@@ -148,7 +148,7 @@ function CourseDetails() {
       case ContentType.Loading:
         return <div className="loader"></div>
       case ContentType.Authorized:
-        return repositoryPosts && repositoryPosts.length > 0 ? (
+        return (
           <>
             {user && user.user_type === 'Teacher' && (
               <nav className={styles.TeacherNav}>
@@ -156,30 +156,32 @@ function CourseDetails() {
                 <button onClick={() => navigate(`/course/${id}/post/`)}>Dodaj Post</button>
               </nav>
             )}
-            <div className={styles.CourseWrapper}>
-              <div className={styles.CourseSideBar}>
-                <h3>Tematy:</h3>
-                {repositoryPosts?.map((post, index) => (
-                  <a href="#" key={index}>
-                    {post.title}
-                  </a>
-                ))}
+            {repositoryPosts && repositoryPosts.length > 0 ? (
+              <div className={styles.CourseWrapper}>
+                <div className={styles.CourseSideBar}>
+                  <h3>Tematy:</h3>
+                  {repositoryPosts.map((post, index) => (
+                    <a href="#" key={index}>
+                      {post.title}
+                    </a>
+                  ))}
+                </div>
+                <div className={styles.CourseContent}>
+                  {repositoryPosts.map((post, index) => (
+                    <CoursePosts
+                      key={index}
+                      post={post}
+                      postContentVisibility={postContentVisibility[index]}
+                      togglePostContentVisibility={() => togglePostContentVisibility(index)}
+                      repositoryId={id!}
+                    />
+                  ))}
+                </div>
               </div>
-              <div className={styles.CourseContent}>
-                {repositoryPosts?.map((post, index) => (
-                  <CoursePosts
-                    key={index}
-                    post={post}
-                    postContentVisibility={postContentVisibility[index]}
-                    togglePostContentVisibility={() => togglePostContentVisibility(index)}
-                    repositoryId={id!}
-                  />
-                ))}
-              </div>
-            </div>
+            ) : (
+              <h1>Brak postów</h1>
+            )}
           </>
-        ) : (
-          <h1>Brak postów</h1>
         )
     }
   }

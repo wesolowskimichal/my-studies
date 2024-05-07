@@ -41,6 +41,7 @@ export interface RepositoryPost {
   title: string
   description: string
   attachment: File | null
+  localAttachment?: string
   isTask: boolean
   pinned: boolean
   due_to: Date

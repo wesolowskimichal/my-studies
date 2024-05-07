@@ -91,13 +91,23 @@ function CoursePosts({
             }}
             value={post.description}
           />
-          {post.attachment && (
+
+          {asView && post.localAttachment ? (
             <>
-              <a href={`${import.meta.env.VITE_APP_API_URL}${post?.attachment}`} target="_blank">
+              <a href={post.localAttachment} target="_blank">
                 <img src={attachmentIcon} alt="Attachment Icon" />
                 Załącznik
               </a>
             </>
+          ) : (
+            post.attachment && (
+              <>
+                <a href={`${import.meta.env.VITE_APP_API_URL}${post.attachment}`} target="_blank">
+                  <img src={attachmentIcon} alt="Attachment Icon" />
+                  Załącznik
+                </a>
+              </>
+            )
           )}
           {post.isTask &&
             (isTaskDone(post) ? (

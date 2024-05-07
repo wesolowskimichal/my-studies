@@ -5,16 +5,16 @@ import styles from './CoursePostView.module.scss'
 type CoursePostViewProps = {
   coursePost: RepositoryPost
   onSubmit: (repositoryPost: RepositoryPost) => void
-  setCoursePost: Dispatch<SetStateAction<RepositoryPost>>
 }
 
-export const CoursePostView = ({ coursePost, onSubmit, setCoursePost }: CoursePostViewProps) => {
+export const CoursePostView = ({ coursePost, onSubmit }: CoursePostViewProps) => {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [file, setFile] = useState<File | null>(null)
   const [isTask, setIsTask] = useState(false)
   const [pinned, setPinned] = useState(false)
   const [due_to, setDueTo] = useState(new Date())
+  const [localAttachment, setLocalAttachment] = useState<string>()
 
   useEffect(() => {
     setTitle(coursePost.title)
@@ -75,8 +75,8 @@ export const CoursePostView = ({ coursePost, onSubmit, setCoursePost }: CoursePo
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]) // Store the file object
-      // setCoursePost(createPost())
+      setFile(e.target.files[0])
+      setLocalAttachment(URL.createObjectURL(e.target.files[0]))
     }
   }
 
@@ -123,7 +123,8 @@ export const CoursePostView = ({ coursePost, onSubmit, setCoursePost }: CoursePo
       attachment: file,
       isTask: isTask,
       pinned: pinned,
-      due_to: due_to
+      due_to: due_to,
+      localAttachment: localAttachment
     }
   }
 }

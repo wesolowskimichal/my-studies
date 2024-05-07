@@ -36,7 +36,6 @@ function LogIn() {
             const userResponse = await ApiService.getInstance().getUser()
             if (userResponse.responseCode === ApiResponse.POSITIVE) {
               setUser(userResponse.data)
-              localStorage.setItem('user-data', JSON.stringify(userResponse.data))
             }
           }
           fetchUser()

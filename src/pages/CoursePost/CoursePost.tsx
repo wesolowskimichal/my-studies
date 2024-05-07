@@ -7,6 +7,8 @@ import { ApiResponse } from '../../services/API/ApiResponse'
 import { CoursePostView } from '../../views/CoursePostView/CoursePostView'
 import Page from '../page/Page'
 import CoursePosts from '../../views/CoursePosts/CoursePosts'
+import { usePopup } from '../../hooks/usePopup'
+import router from '../../router'
 
 type PageParams = {
   courseId: string
@@ -15,6 +17,8 @@ type PageParams = {
 
 export const CoursePost = () => {
   const navigate = useNavigate()
+  const { setOnTimeOut, setOnClose, setMessage, setPopupType, setTime, setTrigger, handleError, popup } = usePopup()
+
   const { courseId, postId } = useParams<PageParams>()
   const [post, setPost] = useState<RepositoryPost>({
     title: '',
@@ -44,49 +48,61 @@ export const CoursePost = () => {
     const addCoursePost = async () => {
       const response = await ApiService.getInstance().addPost(coursePost, courseId!)
       if (response.responseCode === ApiResponse.POSITIVE) {
-        console.log('posted')
-        navigate(`/course/${courseId}`)
+        setPopupType('Info')
+        setMessage('Pomyślnie dodano post')
+        setTime(4)
+        setTrigger(true)
       } else {
-        console.log('error')
+        setPopupType('Warning')
+        setTime(4)
+        handleError(response.responseCode)
       }
     }
 
     const changeCoursePost = async () => {
       const response = await ApiService.getInstance().changePost(coursePost, courseId!, postId!)
       if (response.responseCode === ApiResponse.POSITIVE) {
-        console.log('post changed')
-        navigate(`/course/${courseId}`)
+        setPopupType('Info')
+        setMessage('Pomyślnie zaktualizowano post')
+        setTime(4)
+        setTrigger(true)
       } else {
-        console.log('post not changed')
+        setPopupType('Warning')
+        setTime(4)
+        handleError(response.responseCode)
+        setTrigger(true)
       }
     }
 
     postId ? changeCoursePost() : addCoursePost()
   }
 
-  const { content, postValue } = CoursePostView({ coursePost: post, onSubmit: handlePostPost, setCoursePost: setPost })
+  const { content, postValue } = CoursePostView({ coursePost: post, onSubmit: handlePostPost })
 
   return (
-    <Page name="Post" teacherOnly={true}>
-      {loading ? (
-        <div className="centeredLoader"></div>
-      ) : (
-        <div className={styles.Wrapper}>
-          <div className={styles.EditView}>
-            <h1>{postId ? <>Edycja wpisu</> : <>Tworzenie wpisu</>}:</h1>
-            {content}
+    <>
+      <Page name="Post" teacherOnly={true}>
+        {loading ? (
+          <div className="centeredLoader"></div>
+        ) : (
+          <div className={styles.Wrapper}>
+            <div className={styles.EditView}>
+              <h1>{postId ? <>Edycja wpisu</> : <>Tworzenie wpisu</>}:</h1>
+              {content}
+            </div>
+            <div className={styles.PreviewView}>
+              <CoursePosts
+                post={postValue}
+                postContentVisibility={true}
+                togglePostContentVisibility={() => {}}
+                repositoryId={courseId!}
+                asView={true}
+              />
+            </div>
           </div>
-          <div className={styles.PreviewView}>
-            <CoursePosts
-              post={postValue}
-              postContentVisibility={true}
-              togglePostContentVisibility={() => {}}
-              repositoryId={courseId!}
-              asView={true}
-            />
-          </div>
-        </div>
-      )}
-    </Page>
+        )}
+      </Page>
+      {popup}
+    </>
   )
 }
