@@ -1,7 +1,53 @@
-.Wrapper {
+.None {
+  display: none;
+}
+
+.Hide {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 5px;
+  right: 5px;
+  z-index: 1000;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  animation: slideOutRight 0.5s forwards;
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.Show {
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  border-radius: 1rem;
+  z-index: 1000;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  animation: slideInRight 0.5s forwards;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.Wrapper {
   z-index: 9999;
   display: flex;
   flex-direction: column;
@@ -68,7 +114,7 @@
 .ProgressCircle {
   stroke-dasharray: 100;
   stroke-dashoffset: 100;
-  animation: countdown 60s linear forwards;
+  animation: countdown var(--time) linear forwards;
 }
 
 @keyframes countdown {

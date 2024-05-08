@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import styles from './InfoPopup.module.scss'
 
 type InfoPopupProps = {
+  active: boolean
   message: string
   trigger: boolean
   initialTime: number
@@ -9,7 +10,7 @@ type InfoPopupProps = {
   onClose: () => void
 }
 
-export const InfoPopup = ({ message, trigger, initialTime, time, onClose }: InfoPopupProps) => {
+export const InfoPopup = ({ active, message, trigger, initialTime, time, onClose }: InfoPopupProps) => {
   const [closeHovered, setCloseHovered] = useState(false)
   const [currentStyle, setCurrentStyle] = useState(styles.None)
 
@@ -24,6 +25,7 @@ export const InfoPopup = ({ message, trigger, initialTime, time, onClose }: Info
   }
 
   useEffect(() => {
+    if (!active) return
     if (trigger) {
       setCurrentStyle(styles.Show)
     } else {

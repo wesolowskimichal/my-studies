@@ -2,15 +2,26 @@ import { useEffect, useState } from 'react'
 import { WarningPopup } from '../components/WarningPopup/WarningPopup'
 import { InfoPopup } from '../components/InfoPopup/InfoPopup'
 import { ApiResponse } from '../services/API/ApiResponse'
+import { TokenPopup } from '../components/TokenPopup/TokenPopup'
 
-export const usePopup = () => {
+type usePopupProps = {
+  onTimeOut?: () => void
+  onClose?: () => void
+  onRefresh?: () => void
+}
+
+export const usePopup = ({ onTimeOut, onClose, onRefresh }: usePopupProps = {}) => {
+  const [active, setActive] = useState(false)
   const [message, setMessage] = useState('')
   const [initialTime, setInitialTime] = useState(0)
   const [time, setTime] = useState(0)
   const [trigger, setTrigger] = useState(false)
   const [popupType, setPopupType] = useState<'Warning' | 'Token' | 'Info'>('Info')
-  const [onTimeOut, setOnTimeOut] = useState<(() => void) | null>(null)
-  const [onClose, setOnClose] = useState<(() => void) | null>(null)
+
+  const handleSetTrigger = (trigger: boolean) => {
+    setActive(true)
+    setTrigger(trigger)
+  }
 
   const handleError = (apiResponse: ApiResponse) => {
     switch (apiResponse) {
@@ -42,7 +53,7 @@ export const usePopup = () => {
   }
 
   useEffect(() => {
-    if (trigger) {
+    if (active && trigger) {
       const timeOut = setInterval(() => {
         setTime(prevTime => {
           if (prevTime > 1) {
@@ -65,8 +76,15 @@ export const usePopup = () => {
   }
 
   const handleOnClose = () => {
+    setActive(false)
     setTrigger(false)
     if (onClose) onClose()
+  }
+
+  const handleOnRefresh = () => {
+    setActive(false)
+    setTrigger(false)
+    if (onRefresh) onRefresh()
   }
 
   const getPopup = () => {
@@ -78,19 +96,30 @@ export const usePopup = () => {
             trigger={trigger}
             initialTime={initialTime}
             time={time}
-            onClose={() => handleOnClose()}
+            onClose={handleOnClose}
           />
         )
       case 'Token':
-        return <h1>TOKEN</h1>
-      case 'Info':
         return (
-          <InfoPopup
+          <TokenPopup
+            active={active}
             message={message}
             trigger={trigger}
             initialTime={initialTime}
             time={time}
-            onClose={() => handleOnClose()}
+            onClose={handleOnClose}
+            onRefresh={handleOnRefresh}
+          />
+        )
+      case 'Info':
+        return (
+          <InfoPopup
+            active={active}
+            message={message}
+            trigger={trigger}
+            initialTime={initialTime}
+            time={time}
+            onClose={handleOnClose}
           />
         )
     }
@@ -99,12 +128,8 @@ export const usePopup = () => {
   return {
     popupType,
     setPopupType,
-    onClose,
-    setOnClose,
-    onTimeOut,
-    setOnTimeOut,
     trigger,
-    setTrigger,
+    setTrigger: handleSetTrigger,
     time,
     setTime: handleSetTime,
     message,

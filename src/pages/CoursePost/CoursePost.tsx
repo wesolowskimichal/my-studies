@@ -8,7 +8,6 @@ import { CoursePostView } from '../../views/CoursePostView/CoursePostView'
 import Page from '../page/Page'
 import CoursePosts from '../../views/CoursePosts/CoursePosts'
 import { usePopup } from '../../hooks/usePopup'
-import router from '../../router'
 
 type PageParams = {
   courseId: string
