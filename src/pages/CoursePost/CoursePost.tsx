@@ -8,6 +8,7 @@ import { CoursePostView } from '../../views/CoursePostView/CoursePostView'
 import Page from '../page/Page'
 import CoursePosts from '../../views/CoursePosts/CoursePosts'
 import { usePopup } from '../../hooks/usePopup'
+import trashIcon from '../../assets/trash_icon.svg'
 
 type PageParams = {
   courseId: string
@@ -16,7 +17,7 @@ type PageParams = {
 
 export const CoursePost = () => {
   const navigate = useNavigate()
-  const { setOnTimeOut, setOnClose, setMessage, setPopupType, setTime, setTrigger, handleError, popup } = usePopup()
+  const { setMessage, setPopupType, setTime, setTrigger, handleError, popup } = usePopup()
 
   const { courseId, postId } = useParams<PageParams>()
   const [post, setPost] = useState<RepositoryPost>({
@@ -76,6 +77,25 @@ export const CoursePost = () => {
     postId ? changeCoursePost() : addCoursePost()
   }
 
+  const handleDeletePost = () => {
+    const deletePost = async () => {
+      const response = await ApiService.getInstance().deletePost(courseId!, postId!)
+      if (response.responseCode === ApiResponse.POSITIVE) {
+        setPopupType('Info')
+        setMessage('Pomyślnie usunięto post')
+        setTime(4)
+        setTrigger(true)
+      } else {
+        setPopupType('Warning')
+        setTime(4)
+        handleError(response.responseCode)
+        setTrigger(true)
+      }
+    }
+
+    if (courseId && postId) deletePost()
+  }
+
   const { content, postValue } = CoursePostView({ coursePost: post, onSubmit: handlePostPost })
 
   return (
@@ -86,6 +106,11 @@ export const CoursePost = () => {
         ) : (
           <div className={styles.Wrapper}>
             <div className={styles.EditView}>
+              {postId && (
+                <button onClick={() => handleDeletePost()}>
+                  <img src={trashIcon} alt="Usuń" />
+                </button>
+              )}
               <h1>{postId ? <>Edycja wpisu</> : <>Tworzenie wpisu</>}:</h1>
               {content}
             </div>

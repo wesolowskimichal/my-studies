@@ -1,9 +1,11 @@
 .Wrapper {
   justify-self: end;
   align-self: flex-start;
+  flex-basis: fit-content;
+  height: 100%;
 
   .Header {
-    height: 42px;
+    height: 100%;
     margin: 0 auto;
     display: grid;
     place-content: center;
@@ -14,17 +16,18 @@
     padding: 0.1rem;
 
     &.Hover {
-      height: 32px;
+      height: 100%;
       transition: 0.5s;
-      box-shadow: 0 0 15px #94f3e4;
-      color: #94f3e4;
       box-shadow: 0 0 5px #94f3e4;
-      text-shadow: 0 0 5px #94f3e4;
+      color: #94f3e4;
+      box-shadow: 0 0 2px #94f3e4;
+      text-shadow: 0 0 2px #94f3e4;
       --border-angle: 0turn; /* For animation. */
       --main-bg: conic-gradient(from var(--border-angle), #333f44, #1a1a1b 5%, #1a1a1b 60%, #333f44 95%);
 
-      border: solid 5px transparent;
-      border-radius: 2em;
+      border: solid 5 px transparent;
+      translate: translateY(-10px);
+      border-radius: 2rem;
       --gradient-border: conic-gradient(from var(--border-angle), transparent 25%, #37aa9c, #94f3e4 99%, transparent);
 
       background: 
@@ -74,6 +77,22 @@
         text-decoration: none;
       }
 
+      &.Hide {
+        border: 10px solid;
+        border-bottom: 0;
+        border-image-slice: 1;
+        border-width: 2px;
+        border-image-source: linear-gradient(to left, #37aa9c, #94f3e4);
+        text-align: center;
+        padding: 0.4rem;
+
+        opacity: 0;
+        transform: translateY(-20px); // Start position above
+
+        // Add transition properties to animate opacity and transform
+        transition: opacity 0.5s ease, transform 0.5s ease;
+      }
+
       &.Show {
         opacity: 1;
         transform: translateY(0); // End position at original position
@@ -99,11 +118,10 @@
 }
 
 .Current {
-  height: 32px !important;
   --border-angle: 0turn; // For animation.
   --main-bg: conic-gradient(from var(--border-angle), #333f44, #1a1a1b 5%, #1a1a1b 60%, #333f44 95%);
 
-  border: solid 5px transparent;
+  border: solid 3px transparent;
   --gradient-border: conic-gradient(from var(--border-angle), transparent 25%, #37aa9c, #94f3e4 99%, transparent);
 
   background: 

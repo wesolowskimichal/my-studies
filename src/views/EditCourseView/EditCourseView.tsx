@@ -10,6 +10,7 @@ import ApiService from '../../services/API/ApiService'
 import { ApiResponse } from '../../services/API/ApiResponse'
 import { useNavigate } from 'react-router-dom'
 import { usePopup } from '../../hooks/usePopup'
+import { ImportImage } from '../../components/ImportImage/ImportImage'
 
 type EditCourseViewProps = {
   repository: Repository
@@ -36,9 +37,17 @@ export const EditCourseView = ({ repository, onSubmit }: EditCourseViewProps) =>
   const [visileParticipants, setVisibleParticipants] = useState<RepositoryEnrolment[]>([])
   const [searchEnrollments, setSearchEnrollments] = useState('')
   const [visileEnrollments, setVisibleEnrollments] = useState<RepositoryEnrolment[]>([])
+  const [isImportImageVisible, setIsImportImageVisible] = useState(false)
 
   const getPictureSrc = (pictureSrc: string): string => {
     return pictureSrc.startsWith('http') ? pictureSrc : `${import.meta.env.VITE_APP_API_URL}${pictureSrc}`
+  }
+
+  const localApiCall = async (pictureUrl: string) => {
+    const fetchRes = await fetch(pictureUrl)
+    const blob = await fetchRes.blob()
+    const pictureFile = new File([blob], 'profile-picture.png', { type: 'image/png' })
+    setNewPicure(pictureFile)
   }
 
   useEffect(() => {
@@ -79,7 +88,14 @@ export const EditCourseView = ({ repository, onSubmit }: EditCourseViewProps) =>
   }, [searchTeachers, teachers])
 
   useEffect(() => {
+    console.log('owners:')
+
+    console.log(owners)
+
     const nonOwnerTeachers = allTeachers.filter(teacher => !owners.some(owner => owner.id === teacher.id))
+    console.log('notnOwners:')
+    console.log(nonOwnerTeachers)
+
     setTeachers(nonOwnerTeachers)
   }, [owners, allTeachers])
 
@@ -94,6 +110,12 @@ export const EditCourseView = ({ repository, onSubmit }: EditCourseViewProps) =>
       if (response.responseCode === ApiResponse.POSITIVE) {
         setOriginalEnrollments(response.data!)
         setAllEnrollments(response.data!)
+      } else {
+        setPopupType('Info')
+        handleError(response.responseCode)
+        setPopupType('Warning')
+        setTime(4)
+        setTrigger(true)
       }
     }
 
@@ -108,6 +130,12 @@ export const EditCourseView = ({ repository, onSubmit }: EditCourseViewProps) =>
       const response = await ApiService.getInstance().getTeachers()
       if (response.responseCode === ApiResponse.POSITIVE) {
         setAllTeachers(response.data!)
+      } else {
+        setPopupType('Info')
+        handleError(response.responseCode)
+        setPopupType('Warning')
+        setTime(4)
+        setTrigger(true)
       }
     }
 
@@ -164,6 +192,9 @@ export const EditCourseView = ({ repository, onSubmit }: EditCourseViewProps) =>
       setTrigger(true)
       return
     }
+    console.log('to api owners')
+
+    console.log(owners)
     const response = await onSubmit({
       ...repository,
       name: name,
@@ -189,7 +220,7 @@ export const EditCourseView = ({ repository, onSubmit }: EditCourseViewProps) =>
       <div className={styles.Wrapper}>
         <div className={styles.GeneralWrapper}>
           <h1>Ogólne</h1>
-          <form onSubmit={handleSubmit} className={styles.FormWrapper}>
+          <div className={styles.FormWrapper}>
             <div className={styles.NameDiv}>
               <label>Nazwa</label>
               <input type="text" value={name} onChange={e => setName(e.target.value)} />
@@ -201,12 +232,15 @@ export const EditCourseView = ({ repository, onSubmit }: EditCourseViewProps) =>
               ) : (
                 <img src={getPictureSrc(picture)} alt="Repository picture" />
               )}
-              <input type="file" accept="image/*" onChange={handleFileChange} />
+              {/* <input type="file" accept="image/*" onChange={handleFileChange} /> */}
+              <button onClick={() => setIsImportImageVisible(true)} className={styles.ImportImageButton}>
+                Import Image
+              </button>
             </div>
-            <button type="submit">
+            <button className={styles.SaveButton} onClick={handleSubmit}>
               <img src={saveIcon} alt="Save" />
             </button>
-          </form>
+          </div>
         </div>
         <div className={styles.OwnersWrapper}>
           <h1>Właściciele</h1>
@@ -257,7 +291,9 @@ export const EditCourseView = ({ repository, onSubmit }: EditCourseViewProps) =>
                 <div key={index} className={styles.UserRow}>
                   <UserView user={teacher} />
                   <button
-                    onClick={() => setOwners(prevOwners => [...prevOwners, teacher])}
+                    onClick={() => {
+                      setOwners(prevOwners => [...prevOwners, teacher])
+                    }}
                     title="Dodaj jako właściciel"
                     className={styles.AddButton}
                   >
@@ -357,6 +393,9 @@ export const EditCourseView = ({ repository, onSubmit }: EditCourseViewProps) =>
         </div>
       </div>
       {popup}
+      {isImportImageVisible && (
+        <ImportImage onClose={() => setIsImportImageVisible(false)} onSaveApiCall={localApiCall} />
+      )}
     </>
   )
 }

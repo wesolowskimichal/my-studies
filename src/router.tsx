@@ -7,6 +7,7 @@ import CourseDetails from './pages/CourseDetails/CourseDetails'
 import Profile from './pages/User/Profile/Profile'
 import { CoursePost } from './pages/CoursePost/CoursePost'
 import { EditCourse } from './pages/EditCourse/EditCourse'
+import { Task } from './pages/Task/Task'
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
   {
     path: '/course/:courseId/post/:postId?',
     element: <CoursePost />
+  },
+  {
+    path: '/course/:courseId/task/:taskId',
+    element: <Task />
   },
   {
     path: '/test_jwt',

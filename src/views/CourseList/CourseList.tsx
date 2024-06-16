@@ -6,6 +6,7 @@ import { Repository, RepositoryEnrolment } from '../../components/interfaces'
 import ApiService from '../../services/API/ApiService'
 import { ApiResponse } from '../../services/API/ApiResponse'
 import { context } from '../../services/UserContext/UserContext'
+import { usePopup } from '../../hooks/usePopup'
 
 function CourseList() {
   const [courses, setCourses] = useState<Repository[] | null>(null)
@@ -13,6 +14,7 @@ function CourseList() {
   const [search, setSearch] = useState('')
   const [loaded, setLoaded] = useState(false)
   const { user } = context()
+  const { setTime, setTrigger, handleError, popup, setPopupType } = usePopup()
 
   const navigate = useNavigate()
 
@@ -26,7 +28,10 @@ function CourseList() {
     const getAllCourses = async () => {
       const response = await ApiService.getInstance().getMyRepositories(user!.user_type)
       if (response.responseCode !== ApiResponse.POSITIVE) {
-        console.error(`Error fetching course: ' ${response.responseCode}`)
+        setTime(8)
+        handleError(response.responseCode)
+        setPopupType('Warning')
+        setTrigger(true)
         return
       }
       const repositories = response.data!
@@ -41,41 +46,46 @@ function CourseList() {
     if (search.length === 0) {
       setVisibleCourses(courses)
     } else {
-      const filteredCourses = courses?.filter(course =>
-        course.name.toLowerCase().includes(search.toLowerCase())
-      )
+      const filteredCourses = courses?.filter(course => course.name.toLowerCase().includes(search.toLowerCase()))
       setVisibleCourses(filteredCourses ?? null)
     }
   }, [search, courses])
 
   return (
-    <div className={styles.Wrapper} style={!loaded ? { height: '100vh' } : {}}>
-      {loaded ? (
-        <>
-          <div className={styles.FindBox}>
-            <input
-              type="text"
-              name=""
-              id=""
-              placeholder="Szukaj kursu"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
-          </div>
-          {courses && courses.length > 0 ? (
-            visibleCourses?.map((course, index) => (
-              <div key={index} className={styles.CourseWrapper}>
-                <Course repository={course} />
-              </div>
-            ))
-          ) : (
-            <div> Nie masz żadnych kursów</div>
-          )}
-        </>
-      ) : (
-        <div className="loader" style={{ gridColumn: '2 / 3' }}></div>
-      )}
-    </div>
+    <>
+      <div className={styles.Wrapper} style={!loaded ? { height: '100vh' } : {}}>
+        {loaded ? (
+          <>
+            <div className={styles.FindBox}>
+              <input
+                type="text"
+                name=""
+                id=""
+                placeholder="Szukaj kursu"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+              />
+            </div>
+            {courses && courses.length > 0 ? (
+              visibleCourses && visibleCourses.length > 0 ? (
+                visibleCourses?.map((course, index) => (
+                  <div key={index} className={styles.CourseWrapper}>
+                    <Course repository={course} />
+                  </div>
+                ))
+              ) : (
+                <h3>Brak wyników wyszukiwania</h3>
+              )
+            ) : (
+              <div> Nie masz żadnych kursów</div>
+            )}
+          </>
+        ) : (
+          <div className="loader" style={{ gridColumn: '2 / 3' }}></div>
+        )}
+      </div>
+      {popup}
+    </>
   )
 }
 

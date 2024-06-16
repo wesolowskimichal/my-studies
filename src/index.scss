@@ -1,5 +1,9 @@
 @import './utils/variables.scss';
 
+* {
+  box-sizing: border-box;
+}
+
 :root {
   font-family: $font-family;
   line-height: 1.5;

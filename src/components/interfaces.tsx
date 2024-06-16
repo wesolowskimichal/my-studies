@@ -9,6 +9,7 @@ export interface Token {
 }
 
 export interface User {
+  username: string
   id: string
   first_name: string
   last_name: string
@@ -49,18 +50,20 @@ export interface RepositoryPost {
 }
 
 export interface RepositoryTaskResponse {
-  id: string
+  id?: string
   owner: User
   task: RepositoryPost
-  attachment: File
+  attachment: File | string
   uploaded_at: Date
-  mark: Number
+  mark: Number | null
 }
 
 export interface RepositoryTaskResponseComment {
   owner: User
-  repository_task_response: RepositoryTaskResponse
   comment: string
+  repository_task_response: RepositoryTaskResponse
+  created_at: Date
+  edited_at: Date
 }
 
 export interface Notification {

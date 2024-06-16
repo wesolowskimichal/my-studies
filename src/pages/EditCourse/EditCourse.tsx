@@ -27,8 +27,14 @@ export const EditCourse = () => {
 
   const onSubmit = (repository: Repository) => {
     const changeRepository = async () => {
+      console.log('repository:')
+      console.log(repository)
+
       const response = await ApiService.getInstance().changeRepository(repository)
       if (response.responseCode === ApiResponse.POSITIVE) {
+        console.log('response:')
+        console.log(response)
+
         setRepository(response.data)
       }
       return response.responseCode

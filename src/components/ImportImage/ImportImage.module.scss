@@ -1,0 +1,152 @@
+.Shadow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba($color: #000000, $alpha: 0.5);
+
+  .Wrapper {
+    position: relative;
+    top: 15%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: #1a1a1b;
+
+    .UpperBar {
+      height: fit-content;
+      background-color: #2a2a2c;
+
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      z-index: 10;
+
+      button {
+        width: 30px;
+        height: 30px;
+        padding: 0;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        background-color: rgba($color: #000000, $alpha: 0);
+        border-radius: 18px;
+        border: 0;
+
+        img {
+          width: 24px;
+          height: 24px;
+          filter: invert(100%) sepia(79%) saturate(2476%) hue-rotate(0deg) brightness(118%) contrast(119%);
+        }
+
+        &:hover {
+          transition-duration: 0.6s;
+          cursor: pointer;
+
+          img {
+            transition-duration: 0.6s;
+            filter: invert(83%) sepia(79%) saturate(2476%) hue-rotate(0deg) brightness(118%) contrast(119%);
+          }
+        }
+      }
+    }
+
+    .Content {
+      flex-basis: 100%;
+      max-height: calc(100% - 30px);
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+
+      .OptBar {
+        flex-grow: 1;
+        padding: 0.2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border-left: 2px solid #2a2a2c;
+        background-color: #1a1a1b;
+        z-index: 10;
+
+        h2 {
+          text-align: center;
+        }
+
+        .Settings {
+          display: flex;
+          justify-content: space-between;
+          flex-direction: column;
+
+          .Buttons {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            row-gap: 1rem;
+
+            button {
+              width: 24px;
+              height: 24px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              padding: 0.5rem;
+            }
+
+            .CircleButtons {
+              width: 100%;
+              display: flex;
+              flex-direction: row;
+              justify-content: space-evenly;
+
+              button {
+                border-radius: 12px;
+                border: 1px solid #37aa9c;
+                background-color: #1a1a1b;
+              }
+            }
+
+            .SquareButtons {
+              width: 100%;
+              display: flex;
+              flex-direction: row;
+              justify-content: space-evenly;
+
+              button {
+                border: 1px solid #37aa9c;
+                background-color: #1a1a1b;
+              }
+            }
+          }
+        }
+
+        .ImportImageButton {
+          width: 40%;
+          padding: 0.2rem;
+          margin: 0 auto;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: #2a2a2c;
+          border-radius: 0.4rem;
+
+          &:hover {
+            cursor: pointer;
+            transition-duration: 0.6s;
+            background-color: #37aa9c;
+          }
+        }
+      }
+    }
+
+    footer {
+      height: fit-content;
+    }
+  }
+}

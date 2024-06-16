@@ -1,6 +1,8 @@
 import { Repository } from '../../components/interfaces'
 import styles from './Course.module.scss'
-import { Link } from 'react-router-dom'
+import removeIcon from '../../assets/removeIcon.svg'
+import openIcon from '../../assets/opneIcon.svg'
+import { useNavigate } from 'react-router-dom'
 
 interface CourseProps {
   repository: Repository
@@ -10,6 +12,8 @@ function Course({ repository }: CourseProps) {
   const pictureSrc = repository.picture.startsWith('http')
     ? repository.picture
     : `${import.meta.env.VITE_APP_API_URL}${repository.picture}`
+
+  const navigate = useNavigate()
   return (
     <>
       <img src={pictureSrc} alt="Course Image" className={styles.Img} />
@@ -25,8 +29,16 @@ function Course({ repository }: CourseProps) {
         </span>
       </p>
       <div className={styles.Buttons}>
-        <button className={styles.Remove}></button>
-        <button>przejdz</button>
+        <button className={styles.RemoveButton} title="Usun kurs">
+          <img src={removeIcon} alt="Remove Repository" />
+        </button>
+        <button
+          className={styles.GoToButton}
+          title="Przejdz do kursu"
+          onClick={() => navigate(`/course/${repository.id}`)}
+        >
+          <img src={openIcon} alt="Go to course" />
+        </button>
       </div>
     </>
   )

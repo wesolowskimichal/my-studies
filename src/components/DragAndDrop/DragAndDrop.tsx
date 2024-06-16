@@ -3,17 +3,20 @@ import styles from './DragAndDrop.module.scss'
 import trashIcon from '../../assets/trash_icon.svg'
 
 type DragAndDropProps = {
-  onFilesSelected: (file: File) => void
+  onSend?: (file: File) => void
+  apiFiles?: string
+  disabled?: boolean
 }
 
-function DragAndDrop({ onFilesSelected }: DragAndDropProps) {
-  const [files, setFiles] = useState<File[]>([])
+function DragAndDrop({ onSend, apiFiles = '', disabled = false }: DragAndDropProps) {
+  const [file, setFile] = useState<File | null>()
+  const [initFile, setInitFile] = useState(apiFiles)
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = event.target.files
     if (selectedFiles && selectedFiles.length > 0) {
       const newFiles = Array.from(selectedFiles)
-      setFiles(prevFiles => [...prevFiles, ...newFiles])
+      setFile(newFiles[0])
     }
   }
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
@@ -21,52 +24,81 @@ function DragAndDrop({ onFilesSelected }: DragAndDropProps) {
     const droppedFiles = event.dataTransfer?.files
     if (droppedFiles && droppedFiles?.length > 0) {
       const newFiles = Array.from(droppedFiles)
-      setFiles(prevFiles => [...prevFiles, ...newFiles])
+      setFile(newFiles[0])
     }
   }
 
-  const handleRemoveFile = (index: number) => {
-    setFiles(prevFiles => prevFiles.filter((_, i) => i !== index))
+  const handleRemoveFile = () => {
+    setFile(null)
   }
 
-  useEffect(() => {
-    onFilesSelected(files[0])
-  }, [files, onFilesSelected])
+  const handleRemoveInitFile = () => {
+    setInitFile('')
+  }
+
+  const handleSend = () => {
+    if (file) {
+      if (onSend) onSend(file)
+    }
+  }
+
+  console.log(disabled)
 
   return (
-    <div className={styles.Wrapper}>
+    <div className={styles.Wrapper} style={disabled ? { height: '50px', margin: 0, padding: 0 } : {}}>
       <div className={styles.Files} onDrop={event => handleDrop(event)} onDragOver={event => event.preventDefault()}>
-        {files.length === 0 && <p>Zaimportuj pliki</p>}
-        {files.length > 0 && (
+        {!file && initFile.length === 0 && !disabled && <p>Zaimportuj pliki</p>}
+        {(file || initFile.length > 0) && (
           <>
             <div className={styles.File}>
               <span>Nazwa pliku</span>
               <span>Wielkość</span>
             </div>
-            {files.map((file, index) => (
-              <div className={styles.File} key={index}>
-                <span>{file.name}</span>
-                <span>{(file.size / (1024 * 1024)).toFixed(2)} MB</span>
-                <img src={trashIcon} onClick={() => handleRemoveFile(index)} />
+            {initFile.length > 0 && (
+              <div className={styles.File}>
+                <span>{initFile.split('/').splice(-1)}</span>
+                <span> --- </span>
+                <img src={trashIcon} onClick={() => handleRemoveInitFile()} />
               </div>
-            ))}
+            )}
+            {file && (
+              <div className={styles.File}>
+                <span>{file!.name}</span>
+                <span>{(file!.size / (1024 * 1024)).toFixed(2)} MB</span>
+                <img src={trashIcon} onClick={() => handleRemoveFile()} />
+              </div>
+            )}
           </>
         )}
       </div>
-      {files.length == 0 ? (
+      {!file ? (
         <>
-          <input type="file" hidden id="browse" onChange={handleFileChange} multiple />
+          <input
+            type="file"
+            hidden
+            id="browse"
+            onChange={handleFileChange}
+            disabled={disabled}
+            accept=".zip,application/zip"
+          />
           <label htmlFor="browse" className="browse-btn">
-            Browse files
+            Importuj
           </label>
         </>
       ) : (
         <div className={styles.Footer}>
-          <input type="file" hidden id="browse" onChange={handleFileChange} multiple />
+          <input
+            type="file"
+            hidden
+            id="browse"
+            onChange={handleFileChange}
+            disabled={disabled}
+            accept=".zip,application/zip"
+          />
           <label htmlFor="browse" className="browse-btn">
-            Browse files
+            Importuj
           </label>
-          <button>Wyślij</button>
+          <button onClick={() => handleSend()}>Wyślij</button>
         </div>
       )}
     </div>
