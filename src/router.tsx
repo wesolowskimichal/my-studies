@@ -8,6 +8,7 @@ import Profile from './pages/User/Profile/Profile'
 import { CoursePost } from './pages/CoursePost/CoursePost'
 import { EditCourse } from './pages/EditCourse/EditCourse'
 import { Task } from './pages/Task/Task'
+import { CreateCoursePage } from './pages/CreateCourse/CreateCourse'
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
   {
     path: '/course/:courseId/task/:taskId',
     element: <Task />
+  },
+  {
+    path: '/course/create',
+    element: <CreateCoursePage />
   },
   {
     path: '/test_jwt',

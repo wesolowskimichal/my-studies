@@ -15,7 +15,7 @@ function LoggedPanel() {
       redirect: `/user/${user?.id}`
     },
     { itemTitle: 'Oceny', itemOnClick: () => console.log('Oceny'), redirect: '/' },
-    { itemTitle: 'Wiadomości', itemOnClick: () => console.log('Wiadomości'), redirect: '/' },
+    { itemTitle: 'Powiadomienia', itemOnClick: () => console.log('Wiadomości'), redirect: '/' },
     {
       itemTitle: 'Wyloguj',
       itemOnClick: () => {

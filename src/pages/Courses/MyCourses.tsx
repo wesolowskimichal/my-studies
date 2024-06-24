@@ -7,6 +7,7 @@ import { ApiResponse } from '../../services/API/ApiResponse'
 import Course from '../../views/Course/Course'
 import { context } from '../../services/UserContext/UserContext'
 import { useTitle } from '../../hooks/useTitle'
+import addIcon from '../../assets/addIcon.svg'
 
 function MyCourses() {
   const [courses, setCourses] = useState<Repository[] | null>(null)
@@ -61,6 +62,9 @@ function MyCourses() {
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
+            <button className={styles.AddCourseButton} onClick={() => navigate('/course/create')}>
+              <img src={addIcon} alt="Dodaj kurs" />
+            </button>
           </div>
           <div className={styles.Courses}>
             {courses?.length && courses.length > 0 ? (

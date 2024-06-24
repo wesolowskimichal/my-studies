@@ -155,7 +155,7 @@ export const Task = () => {
       const response = await ApiService.getInstance().setGRadeToTaskResponse(
         courseId!,
         taskId!,
-        task!.id!,
+        targetResponse!.id!,
         Number(grade)
       )
       if (response.responseCode === ApiResponse.POSITIVE) {

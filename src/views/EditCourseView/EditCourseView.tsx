@@ -15,9 +15,10 @@ import { ImportImage } from '../../components/ImportImage/ImportImage'
 type EditCourseViewProps = {
   repository: Repository
   onSubmit: (repository: Repository) => Promise<ApiResponse>
+  creating?: boolean
 }
 
-export const EditCourseView = ({ repository, onSubmit }: EditCourseViewProps) => {
+export const EditCourseView = ({ repository, onSubmit, creating = false }: EditCourseViewProps) => {
   const navigate = useNavigate()
   const { setPopupType, setTime, setMessage, setTrigger, handleError, popup } = usePopup()
 
@@ -70,7 +71,6 @@ export const EditCourseView = ({ repository, onSubmit }: EditCourseViewProps) =>
         const name = participant.user.first_name + ' ' + participant.user.last_name
         return name.toLowerCase().includes(searchParticipants.toLowerCase())
       })
-      console.log(filteredParticipants)
       setVisibleParticipants(filteredParticipants)
     }
   }, [searchParticipants, participants])
@@ -88,13 +88,7 @@ export const EditCourseView = ({ repository, onSubmit }: EditCourseViewProps) =>
   }, [searchTeachers, teachers])
 
   useEffect(() => {
-    console.log('owners:')
-
-    console.log(owners)
-
     const nonOwnerTeachers = allTeachers.filter(teacher => !owners.some(owner => owner.id === teacher.id))
-    console.log('notnOwners:')
-    console.log(nonOwnerTeachers)
 
     setTeachers(nonOwnerTeachers)
   }, [owners, allTeachers])
@@ -122,7 +116,7 @@ export const EditCourseView = ({ repository, onSubmit }: EditCourseViewProps) =>
     setName(repository.name)
     setPicture(repository.picture)
     setOwners(repository.owners)
-    fetchEnrollments()
+    if (!creating) fetchEnrollments()
   }, [repository])
 
   useEffect(() => {
@@ -141,13 +135,6 @@ export const EditCourseView = ({ repository, onSubmit }: EditCourseViewProps) =>
 
     fetchTeachers()
   }, [])
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const selectedFile = event.target.files[0]
-      setNewPicure(selectedFile)
-    }
-  }
 
   const handleRemoveOwner = (owner: User) => {
     const newOwners = owners.filter(it => it != owner)
@@ -192,9 +179,6 @@ export const EditCourseView = ({ repository, onSubmit }: EditCourseViewProps) =>
       setTrigger(true)
       return
     }
-    console.log('to api owners')
-
-    console.log(owners)
     const response = await onSubmit({
       ...repository,
       name: name,

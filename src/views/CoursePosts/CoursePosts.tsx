@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import styles from './CoursePosts.module.scss'
 import attachmentIcon from '../../assets/attachment_icon.svg'
 import hidePostIcon from '../../assets/hidePost_icon.png'
@@ -37,43 +37,50 @@ function CoursePosts({
   const postHeaderRef = useRef<HTMLDivElement>(null)
   const postContentRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    const fetchResponse = async () => {
-      const response = await ApiService.getInstance().getTaskResponse(repositoryId, post.id!)
-      if (response.responseCode === ApiResponse.POSITIVE) {
-        setResponse(response.data)
-        const currentDate = new Date()
-        const dueTo = new Date(post.due_to)
-        if (currentDate > dueTo || response.data!.mark) {
-          setTaskState('closed')
-        } else {
-          setTaskState('edit')
-        }
+  const fetchResponse = useCallback(async () => {
+    const response = await ApiService.getInstance().getTaskResponse(repositoryId, post.id!)
+    const currentDate = new Date()
+    const dueTo = new Date(post.due_to)
+
+    if (response.responseCode === ApiResponse.POSITIVE) {
+      setResponse(response.data)
+
+      if (currentDate > dueTo || response.data!.mark) {
+        setTaskState('closed')
+      } else {
+        setTaskState('edit')
+      }
+    } else {
+      if (currentDate > dueTo || (response.data && response.data.mark)) {
+        setTaskState('closed')
       } else {
         setTaskState('upload')
       }
     }
+  }, [repositoryId, post.id, post.due_to])
 
+  useEffect(() => {
     if (user && user.user_type === 'Student' && post.isTask) {
       fetchResponse()
     }
-  }, [user, post])
+  }, [fetchResponse, user, post.isTask])
+
+  const fetchComments = useCallback(async () => {
+    const commentsResponse = await ApiService.getInstance().getTaskResponseComment(
+      repositoryId,
+      post.id!,
+      response!.id!
+    )
+    if (commentsResponse.responseCode === ApiResponse.POSITIVE) {
+      setComments(commentsResponse.data!)
+    }
+  }, [repositoryId, post.id, response])
 
   useEffect(() => {
-    const fetchComments = async () => {
-      const commentsResponse = await ApiService.getInstance().getTaskResponseComment(
-        repositoryId,
-        post.id!,
-        response!.id!
-      )
-      if (commentsResponse.responseCode === ApiResponse.POSITIVE) {
-        setComments(commentsResponse.data!)
-      }
-    }
     if (user && user.user_type === 'Student' && post.isTask && response) {
       fetchComments()
     }
-  }, [user, post, response])
+  }, [user, post.isTask, response, fetchComments])
 
   useEffect(() => {
     console.log(taskState)
@@ -251,16 +258,18 @@ function CoursePosts({
                 <>
                   <h3 style={{ margin: '0', paddingLeft: '1rem' }}>Przesłane pliki:</h3>
                   <div className={styles.SentFiles}>
-                    <a
-                      href={`${
-                        (response!.attachment as string).startsWith('http')
-                          ? response!.attachment
-                          : `${import.meta.env.VITE_APP_API_URL}${response!.attachment}`
-                      }`}
-                      target="_blank"
-                    >
-                      {(response!.attachment as string).split('/').splice(-1)}
-                    </a>
+                    {post.attachment && (
+                      <a
+                        href={`${
+                          (response!.attachment as string).startsWith('http')
+                            ? response!.attachment
+                            : `${import.meta.env.VITE_APP_API_URL}${response!.attachment}`
+                        }`}
+                        target="_blank"
+                      >
+                        {(response!.attachment as string).split('/').splice(-1)}
+                      </a>
+                    )}
                   </div>
                 </>
               ) : (

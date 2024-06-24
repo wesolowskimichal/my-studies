@@ -42,6 +42,7 @@ export interface RepositoryPost {
   title: string
   description: string
   attachment: File | null
+  maxMark?: number
   localAttachment?: string
   isTask: boolean
   pinned: boolean

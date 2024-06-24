@@ -48,6 +48,7 @@ class ApiService {
     }
     const token = localStorage.getItem('accessToken')
     const decodedToken = jwtDecode(token!)
+    // @ts-ignore
     return decodedToken.user_id
   }
 
@@ -242,14 +243,12 @@ class ApiService {
   }
 
   public async changeRepository(repository: Repository): Promise<ApiServiceResponse<Repository>> {
-    console.log('api in:')
-    console.log(repository)
-
     const putRepository = async () => {
       const requestData = new FormData()
       requestData.append('name', repository.name)
+
       repository.owners.forEach((owner, index) => {
-        requestData.append(`owners[${index}]`, owner.id)
+        requestData.append('owners', owner.id)
       })
 
       if (repository.newPicture) {
@@ -274,6 +273,24 @@ class ApiService {
     }
 
     return this.apiRequest(fetchPost)
+  }
+
+  public async createRepository(repository: Repository): Promise<ApiServiceResponse<Repository>> {
+    const postRepository = async () => {
+      const requestData = new FormData()
+      requestData.append('name', repository.name)
+      if (repository.newPicture) {
+        requestData.append('picture', repository.newPicture)
+      }
+      repository.owners.forEach((owner, index) => {
+        requestData.append('owners', owner.id)
+      })
+      const response = await axios.post(`/api/repositories/list/`, requestData, this.getConfig(true))
+
+      return response.data
+    }
+
+    return this, this.apiRequest(postRepository)
   }
 
   public async changePost(
